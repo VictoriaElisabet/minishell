@@ -18,7 +18,7 @@
 #include <fcntl.h>
 #include "minishell.h"
 
-char    *read_prompt(char *prompt)
+char    *read_prompt()
 {
     /*int ret;
     char buf[BUF_SIZE + 1];
@@ -34,16 +34,14 @@ char    *read_prompt(char *prompt)
     char    *prompt_string;
     char    *tmp;
 
-    prompt_string = NULL;    
-    ft_printf("%s", prompt);
+   
+    prompt_string = NULL;
+    ret = 0;
     while((ret = read(0, &ch, 1)) > 0)
-    {
+    {   
         ch[ret] = '\0';
-        if ((int)ch[0] == EOF || ch[0] == '\n')
-        {
-
+        if ((int)ch[0] == EOF || ch[0] == '\n' || ch[0] == ';')
             break ;
-        }
         if (prompt_string == NULL)
             prompt_string = ft_strnew(0);
         tmp = ft_strjoin(prompt_string, ch);
@@ -58,9 +56,13 @@ int main()
     char *prompt_string;
     while(1)
     {
-        prompt_string = read_prompt("Enter info: ");
-        ft_printf("strin = %s\n", prompt_string);
+        ft_printf("Enter info: ");
+        while((prompt_string = read_prompt()))
+        {
+            ft_printf("strin = %s\n", prompt_string);
+        }
     }
+    return (EXIT_SUCCESS);
     //int fd;
     //fd = open(stdin, O_RDONLY);
     
