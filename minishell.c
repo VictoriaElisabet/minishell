@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   filearr.c                                          :+:      :+:    :+:   */
+/*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vgrankul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -17,8 +17,69 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "minishell.h"
+int     count_ctrl_op(char *prt_str)
+{
+    int count;
+    int i;
 
-char    *read_prompt()
+    i = 0;
+    count = 0;
+    while(prt_str[i] != '\0')
+    {
+        if (prt_str[i] == '|' || prt_str[i] == '&' || prt_str[i] == ';')
+        {
+            if (prt_str[i + 1] == '|' || prt_str[i + 1] == '&')
+                i++;
+            count++;
+        }
+        i++;        
+    }
+    ft_printf("count %d\n", count);
+    return (count);
+}
+
+int     count_commlength(char *prt_str)
+{
+    int i;
+
+    i = 0;
+    while(prt_str[i] != '\0')
+    {
+        if (prt_str[i] == '|' || prt_str[i] == '&' || prt_str[i] == ';')
+        {
+            i++;
+            if (prt_str[i] == '|' || prt_str[i] == '&')
+                i++;
+            break ;
+        }
+        i++;
+    }
+    ft_printf("i = %d", i);
+    return (i);
+}
+
+char    **split_commands(char *prt_str)
+{
+    char    **commands;
+    int     i;
+    int     j;
+
+    j = 0;
+    i = 0;
+    commands = (char**)malloc(count_ctrl_op(prt_str) * sizeof(char*) + 1);
+    while (prt_str[i] != '\0')
+    {
+        commands[j] = ft_strsub(&prt_str[i], 0, count_commlength(&prt_str[i]));
+        ft_printf("c %s\n", commands[j]);
+        j++;
+        i = i + count_commlength(&prt_str[i]);
+
+    }
+    commands[j] = NULL;
+    return (commands);
+}
+
+char    *read_prompt(char *prompt)
 {
     /*int ret;
     char buf[BUF_SIZE + 1];
@@ -31,36 +92,42 @@ char    *read_prompt()
     }*/
     int     ret;
     char     ch[2];
-    char    *prompt_string;
+    char    *prt_str;
     char    *tmp;
-
    
-    prompt_string = NULL;
-    ret = 0;
+    prt_str = NULL;
+    ft_printf("%s", prompt);
     while((ret = read(0, &ch, 1)) > 0)
     {   
         ch[ret] = '\0';
-        if ((int)ch[0] == EOF || ch[0] == '\n' || ch[0] == ';')
-            break ;
-        if (prompt_string == NULL)
-            prompt_string = ft_strnew(0);
-        tmp = ft_strjoin(prompt_string, ch);
-        free(prompt_string);
-        prompt_string = tmp;
+        if ((int)ch[0] == EOF || ch[0] == '\n')
+            return (prt_str);
+        if (prt_str == NULL)
+            prt_str = ft_strnew(0);
+        tmp = ft_strjoin(prt_str, ch);
+        free(prt_str);
+        prt_str = tmp;
     }
-    return (prompt_string);
+    return (prt_str);
 }
 
 int main()
 {
-    char *prompt_string;
+    char *prt_str;
+    char **commands;
+    int     i;
+
+    i = 0;
     while(1)
     {
-        ft_printf("Enter info: ");
-        while((prompt_string = read_prompt()))
-        {
-            ft_printf("strin = %s\n", prompt_string);
-        }
+        prt_str = read_prompt("Enter info: ");
+         ft_printf("prompt_str%s\n", prt_str);
+       commands = split_commands(prt_str);
+       
+        while(commands[i] != NULL)
+           ft_printf("%s\n", commands[i++]);
+        
+
     }
     return (EXIT_SUCCESS);
     //int fd;
