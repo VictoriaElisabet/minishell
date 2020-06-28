@@ -26,6 +26,8 @@ int     count_ctrl_op(char *prt_str)
     count = 0;
     while(prt_str[i] != '\0')
     {
+        if (prt_str[i + 1] == '\0' && prt_str[i] != ';' && prt_str[i] != '|' && prt_str[i] != '&')
+            count++;
         if (prt_str[i] == '|' || prt_str[i] == '&' || prt_str[i] == ';')
         {
             if (prt_str[i + 1] == '|' || prt_str[i + 1] == '&')
@@ -54,7 +56,7 @@ int     count_commlength(char *prt_str)
         }
         i++;
     }
-    ft_printf("i = %d", i);
+    //ft_printf("i = %d", i);
     return (i);
 }
 
@@ -63,16 +65,17 @@ char    **split_commands(char *prt_str)
     char    **commands;
     int     i;
     int     j;
+    int     comms;
 
     j = 0;
     i = 0;
-    commands = (char**)malloc(count_ctrl_op(prt_str) * sizeof(char*) + 1);
-    while (prt_str[i] != '\0')
+    comms = count_ctrl_op(prt_str);
+    commands = (char**)malloc(comms * sizeof(char*) + 1);
+    while (j < comms)
     {
         commands[j] = ft_strsub(&prt_str[i], 0, count_commlength(&prt_str[i]));
-        ft_printf("c %s\n", commands[j]);
-        j++;
         i = i + count_commlength(&prt_str[i]);
+        j++;
 
     }
     commands[j] = NULL;
@@ -103,11 +106,24 @@ char    *read_prompt(char *prompt)
         if ((int)ch[0] == EOF || ch[0] == '\n')
             return (prt_str);
         if (prt_str == NULL)
-            prt_str = ft_strnew(0);
-        tmp = ft_strjoin(prt_str, ch);
+            if(!(prt_str = ft_strnew(0)))
+			{
+				ft_printf("Malloc failed");
+				exit(EXIT_FAILURE);
+			}
+        if(!(tmp = ft_strjoin(prt_str, ch)))
+		{
+			ft_printf("Malloc failed");
+			exit(EXIT_FAILURE);
+		}
         free(prt_str);
         prt_str = tmp;
     }
+	if (ret < 0)
+	{
+		ft_printf("Read failed");
+		exit(EXIT_FAILURE);	
+	}
     return (prt_str);
 }
 
@@ -117,15 +133,18 @@ int main()
     char **commands;
     int     i;
 
-    i = 0;
     while(1)
     {
-        prt_str = read_prompt("Enter info: ");
-         ft_printf("prompt_str%s\n", prt_str);
-       commands = split_commands(prt_str);
-       
+		prt_str = read_prompt("Enter info: ");
+		ft_printf("prompt_str %s\n", prt_str);
+		if (prt_str != '\0')
+			commands = split_commands(prt_str);
+       	i = 0;
         while(commands[i] != NULL)
-           ft_printf("%s\n", commands[i++]);
+        {
+           ft_printf("main %s\n", commands[i]);
+           i++;
+        }
         
 
     }
