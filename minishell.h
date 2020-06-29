@@ -13,11 +13,16 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdlib.h>
-# include <unistd.h>
-# include <string.h>
+#include <sys/types.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "./libft/libft.h"
 
 # define BUF_SIZE 32
+
+int     count_words(char *command);
 
 #endif

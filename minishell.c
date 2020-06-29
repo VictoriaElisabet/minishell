@@ -10,13 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include "minishell.h"
+
 int     count_ctrl_op(char *prt_str)
 {
     int count;
@@ -36,7 +31,6 @@ int     count_ctrl_op(char *prt_str)
         }
         i++;        
     }
-    ft_printf("count %d\n", count);
     return (count);
 }
 
@@ -56,11 +50,10 @@ int     count_commlength(char *prt_str)
         }
         i++;
     }
-    //ft_printf("i = %d", i);
     return (i);
 }
 
-char    **split_commands(char *prt_str)
+char    **create_command_list(char *prt_str)
 {
     char    **commands;
     int     i;
@@ -70,10 +63,18 @@ char    **split_commands(char *prt_str)
     j = 0;
     i = 0;
     comms = count_ctrl_op(prt_str);
-    commands = (char**)malloc(comms * sizeof(char*) + 1);
+    if(!(commands = (char**)malloc(comms * sizeof(char*) + 1)))
+	{
+		ft_printf("Malloc failed");
+		exit(EXIT_FAILURE);
+	}
     while (j < comms)
     {
-        commands[j] = ft_strsub(&prt_str[i], 0, count_commlength(&prt_str[i]));
+        if(!(commands[j] = ft_strsub(&prt_str[i], 0, count_commlength(&prt_str[i]))))
+		{
+			ft_printf("Malloc failed");
+			exit(EXIT_FAILURE);
+		}
         i = i + count_commlength(&prt_str[i]);
         j++;
 
@@ -84,15 +85,6 @@ char    **split_commands(char *prt_str)
 
 char    *read_prompt(char *prompt)
 {
-    /*int ret;
-    char buf[BUF_SIZE + 1];
-
-    ft_printf("%s", prompt);
-    while ((ret = read(0, buf, BUF_SIZE)) > 0)
-    {
-        if(ft_strchr(buf, EOF) || ft_strchr(buf, '\n'))
-            break ;
-    }*/
     int     ret;
     char     ch[2];
     char    *prt_str;
@@ -121,6 +113,7 @@ char    *read_prompt(char *prompt)
     }
 	if (ret < 0)
 	{
+        //ist för exit borde det bara vara return?
 		ft_printf("Read failed");
 		exit(EXIT_FAILURE);	
 	}
@@ -131,22 +124,27 @@ int main()
 {
     char *prt_str;
     char **commands;
+	//char **words;
     int     i;
 
     while(1)
     {
 		prt_str = read_prompt("Enter info: ");
 		ft_printf("prompt_str %s\n", prt_str);
-		if (prt_str != '\0')
-			commands = split_commands(prt_str);
-       	i = 0;
-        while(commands[i] != NULL)
+		if (prt_str != NULL)
         {
-           ft_printf("main %s\n", commands[i]);
-           i++;
+			commands = create_command_list(prt_str);
+       	    i = 0;
+            while(commands[i] != NULL)
+            {
+				ft_printf("%d\n", count_words(commands[i]));
+				//execute comm
+				//free argv
+				i++;
+			}
+        	free(prt_str);
+        	free(commands);
         }
-        
-
     }
     return (EXIT_SUCCESS);
     //int fd;
