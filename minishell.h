@@ -23,6 +23,9 @@
 
 # define BUF_SIZE 32
 
-int     count_words(char *command);
+//int     count_words(char *command);
+//int     count_wordlength(char *command);
+
+char    **split_commands(char *command);
 
 #endif

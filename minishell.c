@@ -136,7 +136,7 @@ int main()
 {
     char *prt_str;
     char **commands;
-	//char **words;
+	char **words;
     int     i;
 
     while(1)
@@ -149,7 +149,14 @@ int main()
        	    i = 0;
             while(commands[i] != NULL)
             {
-				ft_printf("%d\n", count_words(commands[i]));
+                words = split_commands(commands[i]);
+                int j = 0;
+                while(words[j] != NULL)
+                {
+                    ft_printf("%d word %s\n", j, words[j]);
+                    j++;
+                }
+				//ft_printf("%d\n", count_words(commands[i]));
 				//execute comm
 				//free argv
 				i++;

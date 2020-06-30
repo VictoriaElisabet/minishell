@@ -19,7 +19,6 @@ int     count_words(char *command)
 
 	i = 0;
 	count = 0;
-	ft_printf("comman %s\n", command);
     while (command[i] != '\0')
     {
         if (command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&' && command[i] != ';')
@@ -47,29 +46,28 @@ int     count_words(char *command)
 	return (count);
 }
 
-/*int     count_wordlength(char *command)
+int     count_wordlength(char *command)
 {
     int i;
-	int j;
 
     i = 0;
-	j = 0;
-    while(command[i] != '\0')
-    {
-		if (command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&')
+	if (command[0] == '|' || command[0] == '&' || command[0] == ';')
+	{
+		i++;
+		if (command[i] == '|' || command[i] == '&')
+        	i++;
+		return (i);
+	}
+	while(command[i] != '|' && command[i] != '&' && command[i] != ';' && command[i] != ' ' && command[i] != '\t' && command[i] != '\0')
+	{
+		if(command[i] == '"' || command[i] == '\'')
         {
-            while(command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&' && command[i] != '\0')
-            {
-                if(command[i] == '"' || command[i] == '\'')
-                {
-                    i++;
-                    while (command[i] != '"' && command[i] != '\'' && command[i] != '\0')
-                        i++;
-                }
-                j++;
-				i++;
-            }
-    }
+            i++;
+            while (command[i] != '"' && command[i] != '\'' && command[i] != '\0')
+                i++;
+        }
+		i++;
+	}
     return (i);
 }
 
@@ -83,22 +81,23 @@ char    **split_commands(char *command)
     j = 0;
     i = 0;
     words_nbr = count_words(command);
-    if(!(commands = (char**)malloc(words_nbr * sizeof(char*) + 1)))
+    if(!(words = (char**)malloc(words_nbr * sizeof(char*) + 1)))
 	{
 		ft_printf("Malloc failed");
 		exit(EXIT_FAILURE);
 	}
     while (j < words_nbr)
     {
-        if(!(words[j] = ft_strsub(&command[i], 0, count_commlength(&command[i]))))
+		while ((command[i] == ' ' || command[i] == '\t') && command[i] != '\0')
+			i++;
+        if(!(words[j] = ft_strsub(&command[i], 0, count_wordlength(&command[i]))))
 		{
 			ft_printf("Malloc failed");
 			exit(EXIT_FAILURE);
 		}
-        i = i + count_commlength(&command[i]);
+        i = i + count_wordlength(&command[i]);
         j++;
-
     }
     words[j] = NULL;
     return (words);
-}*/
+}
