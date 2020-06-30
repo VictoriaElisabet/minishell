@@ -19,57 +19,56 @@ int     count_words(char *command)
 
 	i = 0;
 	count = 0;
-    while ((command[i] == ' ' || command[i] == '\t') && command[i] != '\0')
+	ft_printf("comman %s\n", command);
+    while (command[i] != '\0')
     {
-        i++;
-    }
-	while (command[i] != '\0')
-	{
-        if (command[i] == '"' || command[i] == '\'')
+        if (command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&' && command[i] != ';')
         {
             count++;
-            ft_printf("hii");
-            while (command[i + 1] != '"' && command[i + 1] != '\'' && command[i + 1] != '\0')
+            while(command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&' && command[i] != ';' && command[i] != '\0')
             {
+                if(command[i] == '"' || command[i] == '\'')
+                {
+                    i++;
+                    while (command[i] != '"' && command[i] != '\'' && command[i] != '\0')
+                        i++;
+                }
                 i++;
             }
-            i++;
         }
-        if (command[i + 1] == '\0' && command[i] != '|' && command[i] != '&' && command[i] != '"' && command[i] != '\'')
-        {
-            ft_printf("hiid");
-            count++;
-        }
-		if (command[i] == ' ' && command[i + 1] != ' ' && command[i + 1] != '\0')
-			count++;
-        if (command[i] == '\t' && command[i + 1] != '\t' && command[i + 1] != '\0')
-			count++;
-        if (command[i] == '|' || command[i] == '&')
+        if (command[i] == '|' || command[i] == '&' || command[i] == ';')
         {
             if (command[i + 1] == '|' || command[i + 1] == '&')
                 i++;
             count++;
         }
-		i++;
-	}
+        i++;
+    }
 	return (count);
 }
 
-/*int     count_commlength(char *prt_str)
+/*int     count_wordlength(char *command)
 {
     int i;
+	int j;
 
     i = 0;
-    while(prt_str[i] != '\0')
+	j = 0;
+    while(command[i] != '\0')
     {
-        if (prt_str[i] == '|' || prt_str[i] == '&' || prt_str[i] == ';')
+		if (command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&')
         {
-            i++;
-            if (prt_str[i] == '|' || prt_str[i] == '&')
-                i++;
-            break ;
-        }
-        i++;
+            while(command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&' && command[i] != '\0')
+            {
+                if(command[i] == '"' || command[i] == '\'')
+                {
+                    i++;
+                    while (command[i] != '"' && command[i] != '\'' && command[i] != '\0')
+                        i++;
+                }
+                j++;
+				i++;
+            }
     }
     return (i);
 }
@@ -84,22 +83,22 @@ char    **split_commands(char *command)
     j = 0;
     i = 0;
     words_nbr = count_words(command);
-    if(!(commands = (char**)malloc(comms * sizeof(char*) + 1)))
+    if(!(commands = (char**)malloc(words_nbr * sizeof(char*) + 1)))
 	{
 		ft_printf("Malloc failed");
 		exit(EXIT_FAILURE);
 	}
-    while (j < comms)
+    while (j < words_nbr)
     {
-        if(!(commands[j] = ft_strsub(&prt_str[i], 0, count_commlength(&prt_str[i]))))
+        if(!(words[j] = ft_strsub(&command[i], 0, count_commlength(&command[i]))))
 		{
 			ft_printf("Malloc failed");
 			exit(EXIT_FAILURE);
 		}
-        i = i + count_commlength(&prt_str[i]);
+        i = i + count_commlength(&command[i]);
         j++;
 
     }
-    commands[j] = NULL;
-    return (commands);
+    words[j] = NULL;
+    return (words);
 }*/

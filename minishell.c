@@ -21,6 +21,12 @@ int     count_ctrl_op(char *prt_str)
     count = 0;
     while(prt_str[i] != '\0')
     {
+        if(prt_str[i] == '"' || prt_str[i] == '\'')
+        {
+            i++;
+            while(prt_str[i] != '"' && prt_str[i] != '\'' && prt_str[i] != '\0')
+                i++;
+        }
         if (prt_str[i + 1] == '\0' && prt_str[i] != ';' && prt_str[i] != '|' && prt_str[i] != '&')
             count++;
         if (prt_str[i] == '|' || prt_str[i] == '&' || prt_str[i] == ';')
@@ -41,6 +47,12 @@ int     count_commlength(char *prt_str)
     i = 0;
     while(prt_str[i] != '\0')
     {
+        if(prt_str[i] == '"' || prt_str[i] == '\'')
+        {
+            i++;
+            while(prt_str[i] != '"' && prt_str[i] != '\'' && prt_str[i] != '\0')
+                i++;
+        }
         if (prt_str[i] == '|' || prt_str[i] == '&' || prt_str[i] == ';')
         {
             i++;
