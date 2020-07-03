@@ -23,8 +23,20 @@
 
 # define BUF_SIZE 32
 
+# define OR_OP			1
+# define AMP_OP 		2
+# define AND_OP 		4
+# define S_COL_OP		8
+# define PIPE_OP		16
+# define PIPE_AMP_OP	32
 //int     count_words(char *command);
 //int     count_wordlength(char *command);
+
+typedef struct	s_command
+{
+	char		**argv;
+	int			ctrl_op;
+}				t_command;
 
 char    **split_commands(char *command);
 
