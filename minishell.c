@@ -14,87 +14,6 @@
 
 extern char **environ;
 
-int     count_ctrl_op(char *prt_str)
-{
-	int count;
-	int i;
-
-	i = 0;
-	count = 0;
-	while(prt_str[i] != '\0')
-	{
-		if(prt_str[i] == '"' || prt_str[i] == '\'')
-		{
-			i++;
-			while(prt_str[i] != '"' && prt_str[i] != '\'' && prt_str[i] != '\0')
-				i++;
-		}
-		if (prt_str[i + 1] == '\0' && prt_str[i] != ';' && prt_str[i] != '|' && prt_str[i] != '&')
-			count++;
-		if (prt_str[i] == '|' || prt_str[i] == '&' || prt_str[i] == ';')
-		{
-			if (prt_str[i + 1] == '|' || prt_str[i + 1] == '&')
-				i++;
-			count++;
-		}
-		i++;        
-	}
-	return (count);
-}
-
-int     count_commlength(char *prt_str)
-{
-	int i;
-
-	i = 0;
-	while(prt_str[i] != '\0')
-	{
-		if(prt_str[i] == '"' || prt_str[i] == '\'')
-		{
-			i++;
-			while(prt_str[i] != '"' && prt_str[i] != '\'' && prt_str[i] != '\0')
-				i++;
-		}
-		if (prt_str[i] == '|' || prt_str[i] == '&' || prt_str[i] == ';')
-		{
-			i++;
-			if (prt_str[i] == '|' || prt_str[i] == '&')
-				i++;
-			break ;
-		}
-		i++;
-	}
-	return (i);
-}
-
-char    **create_command_list(char *prt_str)
-{
-	char    **commands;
-	int     i;
-	int     j;
-	int     comms;
-
-	j = 0;
-	i = 0;
-	comms = count_ctrl_op(prt_str);
-	if(!(commands = (char**)malloc(comms * sizeof(char*) + 1)))
-	{
-		ft_printf("Malloc failed");
-		exit(EXIT_FAILURE);
-	}
-	while (j < comms)
-	{
-		if(!(commands[j] = ft_strsub(&prt_str[i], 0, count_commlength(&prt_str[i]))))
-		{
-			ft_printf("Malloc failed");
-			exit(EXIT_FAILURE);
-		}
-		i = i + count_commlength(&prt_str[i]);
-		j++;
-	}
-	commands[j] = NULL;
-	return (commands);
-}
 int     count_env_var(char **environ)
 {
 	int i;
@@ -107,33 +26,34 @@ int     count_env_var(char **environ)
 	return (i);
 }
 
-char    **copy_env(char **environ, char **env)
+t_env    **copy_env(char **environ, t_env **env)
 {
 	int i;
 	int j;
 
 	i = 0;
 	j = 0;
-	env = (char**)malloc(count_env_var(environ) * sizeof(char*) + 1);
+	env = (t_env**)malloc(count_env_var(environ) * sizeof(t_env*) + 1);
 	while(environ[i] != NULL)
 	{
+		env[i] = (t_env*)malloc(sizeof(t_env));
 		if (ft_strncmp(environ[i],"SHELL=", 6) == 0)
+		{
 			//borde kanske vara pwd
-			env[i] = ft_strdup("SHELL=/home/vgrankul/projects/minishell/minishell");
-
+			env[i]->name = ft_strdup("SHELL");
+			env[i]->value = ft_strdup("/home/vgrankul/projects/minishell/minishell");
+		}
 		else
 		{
 			j = 0;
-			env[i] = (char*)malloc(ft_strlen(environ[i]) * sizeof(char) + 1);
-			while(environ[i][j] != '\0')
-			{
-				env[i][j] = environ[i][j];	
-				j++;
-			}
-			env[i][j] = '\0';
+			while (environ[i][j] != '=')
+				j++;	
+			env[i]->name = ft_strsub(environ[i], 0, j);
+			env[i]->value = ft_strsub(&environ[i][j + 1], 0, ft_strlen((&environ[i][j + 1])));	
 		} 
 		i++;
 	}
+	ft_printf("i %d\n", i);
 	env[i] = NULL;
 	return(env);
 }
@@ -181,16 +101,16 @@ int main()
 	char    **commands;
 	char    **words;
 	int     i;
-	char    **env;
+	t_env   **env;
 
 	env = NULL;
 	env = copy_env(environ, env);
-	i = 0;
+	/*i = 0;
 	while(env[i] != NULL)
 	{
-		ft_printf("%s\n", env[i]);
+		ft_printf("%s \n%s\n", env[i]->name, env[i]->value);
 		i++;
-	}
+	}*/
 	while(1)
 	{
 		prt_str = read_prompt("Enter info: ");
@@ -204,6 +124,13 @@ int main()
 			{
 				words = split_commands(commands[i]);
 				int j = 0;
+				while(words[j] != NULL)
+				{
+					ft_printf("%d word %s\n", j, words[j]);
+					j++;
+				}
+				parameter_expansion(words, env);
+				j = 0;
 				while(words[j] != NULL)
 				{
 					ft_printf("%d word %s\n", j, words[j]);

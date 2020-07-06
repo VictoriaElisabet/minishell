@@ -32,6 +32,13 @@
 //int     count_words(char *command);
 //int     count_wordlength(char *command);
 
+typedef struct	s_env
+{
+	char *name;
+	char *value;
+
+}				t_env;
+
 typedef struct	s_command
 {
 	char		**argv;
@@ -39,5 +46,7 @@ typedef struct	s_command
 }				t_command;
 
 char    **split_commands(char *command);
+char    **create_command_list(char *prt_str);
+void	parameter_expansion(char **words, t_env **env);
 
 #endif

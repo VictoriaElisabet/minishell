@@ -11,8 +11,8 @@
 # **************************************************************************** #
 
 NAME = minishell
-SRC = minishell.c split_commands.c
-OBJECTS = minishell.o split_commands.o
+SRC = minishell.c split_commands.c create_command_list.c parameter_expansion.c
+OBJECTS = minishell.o split_commands.o create_command_list.o parameter_expansion.o
 INC = ./
 
 all: $(NAME)
