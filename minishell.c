@@ -14,6 +14,34 @@
 
 extern char **environ;
 
+void	destroy_arr(char **arr)
+{
+	int i;
+
+	i = 0;
+	while(arr[i] != NULL)
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
+
+void	destroy_env(t_env **env)
+{
+	int i;
+
+	i = 0;
+	while(env[i] != NULL)
+	{
+		free(env[i]->name);
+		free(env[i]->value);
+		free(env[i]);
+		i++;
+	}
+	free(env);
+}
+
 int     count_env_var(char **environ)
 {
 	int i;
@@ -33,7 +61,6 @@ t_env    **copy_env(char **environ, t_env **env)
 
 	i = 0;
 	j = 0;
-	env = (t_env**)malloc(count_env_var(environ) * sizeof(t_env*) + 1);
 	while(environ[i] != NULL)
 	{
 		env[i] = (t_env*)malloc(sizeof(t_env));
@@ -53,7 +80,6 @@ t_env    **copy_env(char **environ, t_env **env)
 		} 
 		i++;
 	}
-	ft_printf("i %d\n", i);
 	env[i] = NULL;
 	return(env);
 }
@@ -103,14 +129,8 @@ int main()
 	int     i;
 	t_env   **env;
 
-	env = NULL;
-	env = copy_env(environ, env);
-	/*i = 0;
-	while(env[i] != NULL)
-	{
-		ft_printf("%s \n%s\n", env[i]->name, env[i]->value);
-		i++;
-	}*/
+	env = (t_env**)malloc(count_env_var(environ) * sizeof(t_env*) + 1);
+	copy_env(environ, env);
 	while(1)
 	{
 		prt_str = read_prompt("Enter info: ");
@@ -136,13 +156,16 @@ int main()
 					ft_printf("%d word %s\n", j, words[j]);
 					j++;
 				}
+				destroy_arr(words);
 				//ft_printf("%d\n", count_words(commands[i]));
 				//execute comm
 				//free argv
 				i++;
 			}
 			free(prt_str);
-			free(commands);
+			destroy_arr(commands);
+			//destroy_arr(words);
+			destroy_env(env);
 		}
 	}
 	return (EXIT_SUCCESS);
