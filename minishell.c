@@ -165,9 +165,10 @@ int main()
 			free(prt_str);
 			destroy_arr(commands);
 			//destroy_arr(words);
-			destroy_env(env);
+			
 		}
 	}
+	destroy_env(env);
 	return (EXIT_SUCCESS);
     //int fd;
     //fd = open(stdin, O_RDONLY);

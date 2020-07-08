@@ -12,42 +12,44 @@
 
 #include "minishell.h"
 
-char	*find_var(char *replace, t_env **env)
+char	*replace_var(char *word, int j, t_env **env)
 {
 	int		i;
-	int		j;
 	int		k;
+	char	*name;
+	char	*value;
 	char	*begin;
-	char	*replaced;
 
 	i = 0;
-	j = 0;
 	k = 0;
-	while(replace[k] != '$' && replace[k] != '\0')
-		k++;
-	begin = ft_strsub(&replace[0], 0, k);
-	while(ft_isalnum(replace[j + k]) != 1 && replace[j + k] != '\0')
-		j++;
-	while(env[i] != NULL && replace[j + k] != '\0')
+	while(word[i] != '$' && word[i] != '\0' && j > 0)
 	{
-		if(ft_strcmp(&replace[j + k], env[i]->name) == 0)
+		i++;
+		j--;
+	}
+	if(!(begin = ft_strsub(word, 0, i)))
+		begin = ft_strnew(1);
+	while(ft_isalnum(word[i + k]) != 1 && word[i + k] != '\0' && j-- > 0)
+		k++;
+	name = ft_strsub(&word[i + k], 0, j);
+	i = 0;
+	while(env[i] != NULL)
+	{
+		if(ft_strcmp(name, env[i]->name) == 0)
 		{
-			replaced = ft_strjoin(begin, env[i]->value);
+			value = ft_strjoin(begin, env[i]->value);
 			free(begin);
-			return (replaced);
+			return (value);
 		}
 		i++;
 	}
-	replaced = ft_strjoin(begin, "\0");
-	free(begin);
-	return(replaced);
+	return("\0");
 }
 
 void	parameter_expansion(char **words, t_env **env)
 {
 	int		i;
 	int 	j;
-	char	*replace;
 	char	*replaced;
 	char	*tmp;
 
@@ -68,18 +70,12 @@ void	parameter_expansion(char **words, t_env **env)
 				j++;
 				while (words[i][j] != '\'' && words[i][j] != '\0' && words[i][j] != '}' && words[i][j] != '$' &&words[i][j] != '"')
 					j++;
-				replace = ft_strsub(&words[i][0], 0, j);
-				ft_printf("%s %d\n", &words[i][j], j);
-				replaced = find_var(replace, env);
+				replaced = replace_var(words[i], j, env);
+				if(words[i][j] == '}')
+					j++;
 				tmp = ft_strjoin(replaced, &words[i][j]);
-				ft_printf("repl %s repld %s temp %s\n", replace, replaced, tmp);
-				free (words[i]);
+				free(words[i]);
 				words[i] = tmp;
-				free (replace);
-				//free (replaced);
-				//j = j + ft_strlen(&words[i][j]);
-				ft_printf("char %c %d\n", words[i][j], j);
-
 			}
 			j++;
 		}
