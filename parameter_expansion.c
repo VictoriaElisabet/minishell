@@ -31,22 +31,26 @@ char	*replace_var(char *word, int j, t_env **env)
 		begin = ft_strnew(1);
 	while(ft_isalnum(word[i + k]) != 1 && word[i + k] != '\0' && j-- > 0)
 		k++;
-	name = ft_strsub(&word[i + k], 0, j);
-	i = 0;
-	while(env[i] != NULL)
+	if((name = ft_strsub(&word[i + k], 0, j)) != NULL)
 	{
-		if(ft_strcmp(name, env[i]->name) == 0)
+		i = 0;
+		while(env[i] != NULL)
 		{
-			value = ft_strjoin(begin, env[i]->value);
-			free(begin);
-			free(name);
-			return (value);
+			if(ft_strcmp(name, env[i]->name) == 0)
+			{
+				if((value = ft_strjoin(begin, env[i]->value)) != NULL)
+				{
+					free(begin);
+					free(name);
+					return (value);
+				}
+			}
+			i++;
 		}
-		i++;
 	}
 	free(name);
 	free(begin);
-	return("\0");
+	return(ft_strnew(1));
 }
 
 void	parameter_expansion(char **words, t_env **env)
@@ -73,13 +77,17 @@ void	parameter_expansion(char **words, t_env **env)
 				j++;
 				while (words[i][j] != '\'' && words[i][j] != '\0' && words[i][j] != '}' && words[i][j] != '$' &&words[i][j] != '"')
 					j++;
-				replaced = replace_var(words[i], j, env);
-				if(words[i][j] == '}')
-					j++;
-				tmp = ft_strjoin(replaced, &words[i][j]);
-				free(replaced);
-				free(words[i]);
-				words[i] = tmp;
+				if((replaced = replace_var(words[i], j, env)))
+				{
+					if(words[i][j] == '}')
+						j++;
+					if((tmp = ft_strjoin(replaced, &words[i][j])) != NULL)
+					{
+						free(words[i]);
+						words[i] = tmp;
+					}
+					free(replaced);
+				}
 			}
 			j++;
 		}
