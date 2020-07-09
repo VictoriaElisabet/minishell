@@ -47,6 +47,8 @@ typedef struct	s_command
 
 char    **split_commands(char *command);
 char    **create_command_list(char *prt_str);
+
 void	parameter_expansion(char **words, t_env **env);
+void	tilde_expansion(char **words, t_env **env);
 
 #endif

@@ -39,10 +39,13 @@ char	*replace_var(char *word, int j, t_env **env)
 		{
 			value = ft_strjoin(begin, env[i]->value);
 			free(begin);
+			free(name);
 			return (value);
 		}
 		i++;
 	}
+	free(name);
+	free(begin);
 	return("\0");
 }
 
@@ -74,6 +77,7 @@ void	parameter_expansion(char **words, t_env **env)
 				if(words[i][j] == '}')
 					j++;
 				tmp = ft_strjoin(replaced, &words[i][j]);
+				free(replaced);
 				free(words[i]);
 				words[i] = tmp;
 			}

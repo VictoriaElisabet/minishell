@@ -131,7 +131,8 @@ int main()
 
 	env = (t_env**)malloc(count_env_var(environ) * sizeof(t_env*) + 1);
 	copy_env(environ, env);
-	while(1)
+	int t = 0;
+	while(t < 2)
 	{
 		prt_str = read_prompt("Enter info: ");
 		ft_printf("prompt_str %s\n", prt_str);
@@ -149,6 +150,7 @@ int main()
 					ft_printf("%d word %s\n", j, words[j]);
 					j++;
 				}
+				tilde_expansion(words, env);
 				parameter_expansion(words, env);
 				j = 0;
 				while(words[j] != NULL)
@@ -167,6 +169,7 @@ int main()
 			//destroy_arr(words);
 			
 		}
+		t++;
 	}
 	destroy_env(env);
 	return (EXIT_SUCCESS);
