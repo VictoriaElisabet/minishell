@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char		*check_env(t_env **env, char *name)
+char	*check_env(t_env **env, char *name)
 {
 	int i;
 
@@ -24,6 +24,24 @@ char		*check_env(t_env **env, char *name)
 		i++;
 	}
 	return (NULL);
+}
+
+char	*get_value(char *t_prefix, t_env **env)
+{
+	char *value;
+
+	if ((ft_strcmp(t_prefix, "~/") == 0 || ft_strcmp(t_prefix, "~") == 0) && (value = check_env(env, "HOME")) != NULL)
+		return(value);
+	else if (ft_strcmp(&t_prefix[1], (value = check_env(env, "USER"))) == 0)
+	{
+		if ((value = check_env(env, "HOME")) != NULL)
+			return (value);
+	}
+	else if (ft_strcmp(t_prefix, "~+") == 0 && (value = check_env(env, "PWD")) != NULL)
+		return(value);
+	else if (ft_strcmp(t_prefix, "~-") == 0 && (value = check_env(env, "OLDPWD")) != NULL)
+		return(value);
+	return(NULL);
 }
 
 void	tilde_expansion(char **words, t_env **env)
@@ -44,26 +62,16 @@ void	tilde_expansion(char **words, t_env **env)
 			j = 0;
 			while(words[i][j] != '"' && words[i][j] != '\'' && words[i][j] != '/' && words[i][j] != '\0')
 				j++;
-			t_prefix = ft_strsub(words[i], 0, j);
-			ft_printf("pre %s\n", &t_prefix[1]);
-			if ((ft_strcmp(t_prefix, "~/") == 0 || ft_strcmp(t_prefix, "~") == 0) && (value = check_env(env, "HOME")) != NULL)
+			if((t_prefix = ft_strsub(words[i], 0, j)) != NULL && (value = get_value(t_prefix, env)) != NULL)
 			{
-				tmp = ft_strjoin(value, &words[i][j]);
-				free(words[i]);
-				words[i] = tmp;
-			}
-			else if (ft_strcmp(&t_prefix[1], (value = check_env(env, "USER"))) == 0)
-			{
-				if ((value = check_env(env, "HOME")) != NULL)
+				if((tmp = ft_strjoin(value, &words[i][j])) != NULL)
 				{
-					tmp = ft_strjoin(value, &words[i][j]);
 					free(words[i]);
 					words[i] = tmp;
 				}
 			}
-		free (t_prefix);
+			free (t_prefix);
 		}
 		i++;
 	}
-
 }
