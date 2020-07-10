@@ -130,7 +130,6 @@ int main()
 	t_env   **env;
 	char 	**argv;
 
-	argv = NULL;
 	env = (t_env**)malloc(count_env_var(environ) * sizeof(t_env*) + 1);
 	copy_env(environ, env);
 	int t = 0;
@@ -161,24 +160,6 @@ int main()
 					j++;
 				}
 				argv = create_argv_list(argv, words);
-				/*while(*words != NULL && (str_chr(*words, '=') == 1))
-				{
-					ft_printf("hii");
-					words++;
-				}
-				argv = words;*/
-					j = 0;
-				while(words[j] != NULL)
-				{
-					ft_printf("%d word after %s\n", j, words[j]);
-					j++;
-				}
-				j = 0;
-				while(argv[j] != NULL)
-				{
-					ft_printf("argv %s\n", argv[j]);
-					j++;
-				}
 				destroy_arr(words);
 				//ft_printf("%d\n", count_words(commands[i]));
 				//execute comm
