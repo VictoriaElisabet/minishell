@@ -45,8 +45,12 @@ typedef struct	s_command
 	int			ctrl_op;
 }				t_command;
 
+
+int     str_chr(char *str, int c);
+
 char    **split_commands(char *command);
 char    **create_command_list(char *prt_str);
+char    **create_argv_list(char **argv, char **words);
 
 void	parameter_expansion(char **words, t_env **env);
 void	tilde_expansion(char **words, t_env **env);
