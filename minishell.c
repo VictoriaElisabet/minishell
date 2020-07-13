@@ -96,14 +96,23 @@ char    *read_prompt(char *prompt)
 	while((ret = read(0, &ch, 1)) > 0)
 	{   
 		ch[ret] = '\0';
-		if ((int)ch[0] == EOF || ch[0] == '\n')
-			return (prt_str);
 		if (prt_str == NULL)
 			if(!(prt_str = ft_strnew(0)))
 			{
 				ft_printf("Malloc failed");
 				exit(EXIT_FAILURE);
 			}
+		if ((int)ch[0] == EOF || ch[0] == '\n')
+		{
+			if(!(tmp = ft_strjoin(prt_str, ch)))
+			{
+				ft_printf("Malloc failed");
+				exit(EXIT_FAILURE);
+			}
+			free(prt_str);
+			prt_str = tmp;
+			return (prt_str);
+		}
 		if(!(tmp = ft_strjoin(prt_str, ch)))
 		{
 			ft_printf("Malloc failed");
@@ -124,27 +133,38 @@ char    *read_prompt(char *prompt)
 int main()
 {
 	char    *prt_str;
-	char    **commands;
-	char    **words;
-	int     i;
+	//char    **commands;
+	//char    **words;
+	//int     i;
 	t_env   **env;
-	char 	**argv;
+	//t_command	**commands;
+	//char 	**argv;
+	t_command **commands;
 
+	//commands = NULL;
 	env = (t_env**)malloc(count_env_var(environ) * sizeof(t_env*) + 1);
 	copy_env(environ, env);
-	int t = 0;
-	while(t < 2)
+	//int t = 0;
+	while(1)
 	{
 		prt_str = read_prompt("Enter info: ");
 		ft_printf("prompt_str %s\n", prt_str);
 		//ska vara en egen loop med cond status, så att det stannar när status är fel
 		if (prt_str != NULL)
 		{
-			commands = create_command_list(prt_str);
+			int i = 0;
+			commands = create_command_struct_list(prt_str);
+			while (commands[0]->argv[i] != NULL)
+			{
+				ft_printf("va %s\n", commands[0]->argv[i]);
+				i++;
+			}
+			
+			/*commands = create_command_list(prt_str);
 			i = 0;
 			while(commands[i] != NULL)
 			{
-				words = split_commands(commands[i]);
+				words = split_commands(commands[i], comms);
 				int j = 0;
 				while(words[j] != NULL)
 				{
@@ -160,18 +180,24 @@ int main()
 					j++;
 				}
 				argv = create_argv_list(argv, words);
+				j = 0;
+				while(argv[j] != NULL)
+				{
+					ft_printf("argv %d argv %s\n", j, argv[j]);
+					j++;
+				}
 				destroy_arr(words);
 				//ft_printf("%d\n", count_words(commands[i]));
 				//execute comm
 				//free argv
-				i++;
+				i++;*/
 			}
 			free(prt_str);
-			destroy_arr(commands);
+			//destroy_arr(commands);
 			//destroy_arr(words);
 			
-		}
-		t++;
+		//}
+		//t++;
 	}
 	destroy_env(env);
 	return (EXIT_SUCCESS);

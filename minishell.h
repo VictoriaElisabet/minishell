@@ -41,18 +41,22 @@ typedef struct	s_env
 
 typedef struct	s_command
 {
+	char		**variables;
 	char		**argv;
-	int			ctrl_op;
+	char		*ctrl_op;
+
 }				t_command;
 
 
 int     str_chr(char *str, int c);
 
 char    **split_commands(char *command);
-char    **create_command_list(char *prt_str);
+char   	**create_command_list(char *prt_str);
 char    **create_argv_list(char **argv, char **words);
 
 void	parameter_expansion(char **words, t_env **env);
 void	tilde_expansion(char **words, t_env **env);
+
+t_command    **create_command_struct_list(char *prt_str);
 
 #endif

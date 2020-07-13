@@ -65,7 +65,7 @@ int     count_commlength(char *prt_str)
 	return (i);
 }
 
-char    **create_command_list(char *prt_str)
+char	**create_command_list(char *prt_str)
 {
 	char    **commands;
 	int     i;

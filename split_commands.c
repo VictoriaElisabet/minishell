@@ -21,10 +21,10 @@ int     count_words(char *command)
 	count = 0;
     while (command[i] != '\0')
     {
-        if (command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&' && command[i] != ';')
+        if (command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&' && command[i] != ';' && command[i] != '\n')
         {
             count++;
-            while(command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&' && command[i] != ';' && command[i] != '\0')
+            while(command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&' && command[i] != ';' && command[i] != '\n' && command[i] != '\0')
             {
                 if(command[i] == '"' || command[i] == '\'')
                 {
@@ -35,7 +35,7 @@ int     count_words(char *command)
                 i++;
             }
         }
-        if (command[i] == '|' || command[i] == '&' || command[i] == ';')
+        if (command[i] == '|' || command[i] == '&' || command[i] == ';' || command[i] == '\n')
         {
             if (command[i + 1] == '|' || command[i + 1] == '&')
                 i++;
@@ -51,14 +51,14 @@ int     count_wordlength(char *command)
     int i;
 
     i = 0;
-	if (command[0] == '|' || command[0] == '&' || command[0] == ';')
+	if (command[0] == '|' || command[0] == '&' || command[0] == ';' || command[0] == '\n')
 	{
 		i++;
 		if (command[i] == '|' || command[i] == '&')
         	i++;
 		return (i);
 	}
-	while(command[i] != '|' && command[i] != '&' && command[i] != ';' && command[i] != ' ' && command[i] != '\t' && command[i] != '\0')
+	while(command[i] != '|' && command[i] != '&' && command[i] != ';' && command[i] != ' ' && command[i] != '\t' && command[i] != '\n' && command[i] != '\0')
 	{
 		if(command[i] == '"' || command[i] == '\'')
         {
