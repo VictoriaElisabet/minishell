@@ -107,12 +107,15 @@ t_command   **create_command_struct_list(char *prt_str, t_env **env)
 		while (command_list[i] != NULL)
 		{
 			if((words = split_commands(command_list[i])))
+			{
+				word_expansion(words, env);
 				if((commands[i] = (t_command*)malloc(sizeof(t_command))))
 				{
-					tilde_expansion(words, env);
-					parameter_expansion(words, env);
+					//tilde_expansion(words, env);
+					//parameter_expansion(words, env);
 					commands[i] = fill_command_struct(commands[i], words);
 				}
+			}
 			destroy_arr(words);
 			i++;
 		}

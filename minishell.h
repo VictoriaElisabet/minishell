@@ -55,10 +55,11 @@ int     str_chr(char *str, int c);
 char    **split_commands(char *command);
 char   	**create_command_list(char *prt_str);
 char    **create_argv_list(char **argv, char **words);
+char	*tilde_expansion(char *word, t_env **env);
+char	*parameter_expansion(char *word, t_env **env);
 
-void	parameter_expansion(char **words, t_env **env);
-void	tilde_expansion(char **words, t_env **env);
 void	destroy_arr(char **arr);
+void    word_expansion(char **words, t_env **env);
 
 t_command    **create_command_struct_list(char *prt_str, t_env **env);
 

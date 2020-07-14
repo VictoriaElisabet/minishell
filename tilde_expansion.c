@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parameter_expansion.c                              :+:      :+:    :+:   */
+/*   tilde_expansion.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vgrankul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -44,34 +44,30 @@ char	*get_value(char *t_prefix, t_env **env)
 	return(NULL);
 }
 
-void	tilde_expansion(char **words, t_env **env)
+char	*tilde_expansion(char *word, t_env **env)
 {
-	int i;
-	int j;
-	char *t_prefix;
-	char *tmp;
-	char *value;
-	
-	j = 0;
-	i = 0;
-	value = NULL;
-	while(words[i] != NULL)
-	{
-		if (words[i][0] == '~')
-		{
-			j = 0;
-			while(words[i][j] != '"' && words[i][j] != '\'' && words[i][j] != '/' && words[i][j] != '\0')
-				j++;
-			if((t_prefix = ft_strsub(words[i], 0, j)) != NULL && (value = get_value(t_prefix, env)) != NULL)
+    int     i;
+    char    *t_prefix;
+    char    *value;
+    char    *result;
+    char    *tmp;
+
+    i = 0;
+    value = NULL;
+    result = word;
+    if (word[0] == '~')
+    {
+        while(word[i] != '/' && word[i] != '\0')
+				i++;
+			if((t_prefix = ft_strsub(word, 0, i)) != NULL && (value = get_value(t_prefix, env)) != NULL)
 			{
-				if((tmp = ft_strjoin(value, &words[i][j])) != NULL)
+				if((tmp = ft_strjoin(value, &word[i])) != NULL)
 				{
-					free(words[i]);
-					words[i] = tmp;
+					free(word);
+					result = tmp;
 				}
 			}
-			free (t_prefix);
-		}
-		i++;
-	}
+			free(t_prefix);
+    }
+    return (result);
 }

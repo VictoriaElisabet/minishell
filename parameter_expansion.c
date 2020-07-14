@@ -53,44 +53,36 @@ char	*replace_var(char *word, int j, t_env **env)
 	return(ft_strnew(1));
 }
 
-void	parameter_expansion(char **words, t_env **env)
+char	*parameter_expansion(char *word, t_env **env)
 {
 	int		i;
-	int 	j;
 	char	*replaced;
 	char	*tmp;
+    char    *result;
 
 	i = 0;
-	while (words[i] != 0)
+    result = word;
+	while (word[i] != '\0')
 	{
-		j = 0;
-		while(words[i][j] != '\0')
+	    if (word[i] == '$')
 		{
-			if(words[i][j] == '\'')
-			{
-				j++;
-				while(words[i][j] != '\'' && words[i][j] != '\0')
-					j++;
-			}
-			if (words[i][j] == '$')
-			{
-				j++;
-				while (words[i][j] != '\'' && words[i][j] != '\0' && words[i][j] != '}' && words[i][j] != '$' &&words[i][j] != '"')
-					j++;
-				if((replaced = replace_var(words[i], j, env)))
+				i++;
+				while (word[i] != '\0' && word[i] != '}' && word[i] != '$' && word[i] != '"')
+					i++;
+                ft_printf("cee %c\n", word[i]);
+				if ((replaced = replace_var(word, i, env)))
 				{
-					if(words[i][j] == '}')
-						j++;
-					if((tmp = ft_strjoin(replaced, &words[i][j])) != NULL)
+					if(word[i] == '}')
+						i++;
+					if((tmp = ft_strjoin(replaced, &word[i])) != NULL)
 					{
-						free(words[i]);
-						words[i] = tmp;
+						free(result);
+						result = tmp;
 					}
 					free(replaced);
 				}
-			}
-			j++;
 		}
-		i++;			
+		i++;
 	}
+    return (result);		
 }
