@@ -171,7 +171,7 @@ int main()
 			int i = 0;
 			int j = 0;
 			int k = 0;
-			commands = create_command_struct_list(prt_str);
+			commands = create_command_struct_list(prt_str, env);
 			while (commands[i] != NULL)
 			{
 				ft_printf("comm = %d\n", i);

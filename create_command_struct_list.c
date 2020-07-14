@@ -91,7 +91,7 @@ t_command   *fill_command_struct(t_command *command, char **words)
 	return(command);
 }
 
-t_command   **create_command_struct_list(char *prt_str)
+t_command   **create_command_struct_list(char *prt_str, t_env **env)
 {
 	char		**command_list;
 	char		**words;
@@ -108,7 +108,11 @@ t_command   **create_command_struct_list(char *prt_str)
 		{
 			if((words = split_commands(command_list[i])))
 				if((commands[i] = (t_command*)malloc(sizeof(t_command))))
+				{
+					tilde_expansion(words, env);
+					parameter_expansion(words, env);
 					commands[i] = fill_command_struct(commands[i], words);
+				}
 			destroy_arr(words);
 			i++;
 		}
