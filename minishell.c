@@ -42,6 +42,22 @@ void	destroy_env(t_env **env)
 	free(env);
 }
 
+void	destroy_commands(t_command **commands)
+{
+	int i;
+
+	i = 0;
+	while(commands[i] != NULL)
+	{
+		destroy_arr(commands[i]->variables);
+		destroy_arr(commands[i]->argv);
+		free(commands[i]->ctrl_op);
+		free(commands[i]);
+		i++;
+	}
+	free(commands);
+}
+
 int     count_env_var(char **environ)
 {
 	int i;
@@ -144,8 +160,8 @@ int main()
 	//commands = NULL;
 	env = (t_env**)malloc(count_env_var(environ) * sizeof(t_env*) + 1);
 	copy_env(environ, env);
-	//int t = 0;
-	while(1)
+	int t = 0;
+	while(t < 2)
 	{
 		prt_str = read_prompt("Enter info: ");
 		ft_printf("prompt_str %s\n", prt_str);
@@ -153,10 +169,25 @@ int main()
 		if (prt_str != NULL)
 		{
 			int i = 0;
+			int j = 0;
+			int k = 0;
 			commands = create_command_struct_list(prt_str);
-			while (commands[0]->argv[i] != NULL)
+			while (commands[i] != NULL)
 			{
-				ft_printf("va %s\n", commands[0]->argv[i]);
+				ft_printf("comm = %d\n", i);
+				j = 0;
+				while(commands[i]->variables[j] != NULL)
+				{
+					ft_printf("va %s\n", commands[i]->variables[j]);
+					j++;
+				}
+				k = 0;
+				while(commands[i]->argv[k] != NULL)
+				{
+					ft_printf("argv %s\n", commands[i]->argv[k]);
+					k++;
+				}
+				ft_printf("ctrl %s\n", commands[i]->ctrl_op);
 				i++;
 			}
 			
@@ -193,11 +224,12 @@ int main()
 				i++;*/
 			}
 			free(prt_str);
+			destroy_commands(commands);
 			//destroy_arr(commands);
 			//destroy_arr(words);
 			
 		//}
-		//t++;
+		t++;
 	}
 	destroy_env(env);
 	return (EXIT_SUCCESS);

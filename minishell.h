@@ -56,6 +56,7 @@ char    **create_argv_list(char **argv, char **words);
 
 void	parameter_expansion(char **words, t_env **env);
 void	tilde_expansion(char **words, t_env **env);
+void	destroy_arr(char **arr);
 
 t_command    **create_command_struct_list(char *prt_str);
 

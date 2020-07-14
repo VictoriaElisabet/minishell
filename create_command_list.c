@@ -75,20 +75,14 @@ char	**create_command_list(char *prt_str)
 	j = 0;
 	i = 0;
 	comms = count_ctrl_op(prt_str);
-	if(!(commands = (char**)malloc(comms * sizeof(char*) + 1)))
+	if((commands = (char**)malloc(comms * sizeof(char*) + 1)))
 	{
-		ft_printf("Malloc failed");
-		exit(EXIT_FAILURE);
-	}
-	while (j < comms)
-	{
-		if(!(commands[j] = ft_strsub(&prt_str[i], 0, count_commlength(&prt_str[i]))))
+		while (j < comms)
 		{
-			ft_printf("Malloc failed");
-			exit(EXIT_FAILURE);
+			if((commands[j] = ft_strsub(&prt_str[i], 0, count_commlength(&prt_str[i]))))
+				i = i + count_commlength(&prt_str[i]);
+			j++;
 		}
-		i = i + count_commlength(&prt_str[i]);
-		j++;
 	}
 	commands[j] = NULL;
 	return (commands);

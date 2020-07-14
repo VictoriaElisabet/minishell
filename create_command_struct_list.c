@@ -12,47 +12,82 @@
 
 #include "minishell.h"
 
-int			count_list(char **command_list)
+int			count_vars(char **list)
+{
+	int i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while(list[i] != NULL)
+	{
+		if (str_chr(list[i], '=') == 1)
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+int			count_list(char **list)
 {
 	int i;
 
 	i = 0;
-	while (command_list[i] != NULL)
+	while (list[i] != NULL)
 		i++;
 	return (i);
+}
+
+void		add_variables(char **words, t_command *command, int vars)
+{
+	int i;
+
+	i = 0;
+	if((command->variables = (char**)malloc(vars *sizeof(char*) + 1)))
+	{
+		while (words[i] != NULL && vars > 0)
+		{
+			command->variables[i] = ft_strdup(words[i]);
+			i++;
+			vars--;
+		}
+	}
+	command->variables[i] = NULL;
+}
+
+void		add_argv(char **words, t_command *command, int start, int argc)
+{
+	int i;
+	int j;
+
+	i = start;
+	j = 0;
+	if ((command->argv = (char**)malloc(argc * sizeof(char*) + 1)))
+	{
+		while (words[i] != NULL && argc > 0)
+		{
+			command->argv[j] = ft_strdup(words[i]);
+			i++;
+			j++;
+			argc--;
+		}
+	}
+	command->argv[j] = NULL;
 }
 
 t_command   *fill_command_struct(t_command *command, char **words)
 {
 	int			argc;
-	int			i;
-	int			j;
+	int			vars;
+	int			word_nbr;
 
-	i = 0;
-	j = 0;
-	argc = count_list(words);
-	command = (t_command*)malloc(sizeof(t_command));
-	while(words[i] != NULL)
-	{
-		if (str_chr(words[i], '=') == 1)
-			argc--;
-		else
-		{
-			if (argc == 1)
-				command->ctrl_op = ft_strdup(words[i]);
-			else if (argc > 1)
-			{
-				if (!(command->argv))
-					command->argv = (char**)malloc((argc - 1) * sizeof(char*) + 1);
-				command->argv[j] = (char*)malloc(ft_strlen(words[i]) * sizeof(char) + 1);
-				command->argv[j] = ft_strdup(words[i]);
-				j++;
-			}
-			argc--;
-		}
-		i++;
-	}
-	command->argv[j] = NULL;
+	word_nbr = count_list(words);
+	vars = count_vars(words);
+	argc = word_nbr - vars - 1;
+	add_variables(words, command, vars);
+	add_argv(words, command, vars, argc);
+	if(!(command->ctrl_op = ft_strdup(words[word_nbr - 1])))
+		command->ctrl_op = NULL;
 	return(command);
 }
 
@@ -72,10 +107,13 @@ t_command   **create_command_struct_list(char *prt_str)
 		while (command_list[i] != NULL)
 		{
 			if((words = split_commands(command_list[i])))
-				commands[i] = fill_command_struct(commands[i], words);
+				if((commands[i] = (t_command*)malloc(sizeof(t_command))))
+					commands[i] = fill_command_struct(commands[i], words);
+			destroy_arr(words);
 			i++;
 		}
 	}
+	destroy_arr(command_list);
 	commands[i] = NULL;
 	return (commands);
 }
