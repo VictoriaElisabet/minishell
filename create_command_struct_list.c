@@ -106,7 +106,7 @@ t_command   **create_command_struct_list(char *prt_str, t_env **env)
 	{
 		while (command_list[i] != NULL)
 		{
-			if((words = split_commands(command_list[i])))
+			if((words = word_splitting(command_list[i])))
 			{
 				word_expansion(words, env);
 				if((commands[i] = (t_command*)malloc(sizeof(t_command))))

@@ -71,7 +71,7 @@ int     count_wordlength(char *command)
     return (i);
 }
 
-char    **split_commands(char *command)
+char    **word_splitting(char *command)
 {
     char    **words;
     int     i;
