@@ -188,9 +188,23 @@ int main()
 					k++;
 				}
 				ft_printf("ctrl %s\n", commands[i]->ctrl_op);
+				
 				i++;
+
 			}
-			
+			ft_setenv(commands[0]->argc, commands[0]->argv, &env);
+				i = 0;
+				while (env[i] != NULL)
+				{
+					ft_printf("env %s %s\n", env[i]->name, env[i]->value);
+					i++;
+				}
+			/*i = 0;
+				while (env[i] != NULL)
+			{
+				ft_printf("env %s %s\n", env[i]->name, env[i]->value);
+				i++;
+			}*/
 			/*commands = create_command_list(prt_str);
 			i = 0;
 			while(commands[i] != NULL)

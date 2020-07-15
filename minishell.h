@@ -45,12 +45,15 @@ typedef struct	s_command
 {
 	char		**variables;
 	char		**argv;
+	int			argc;
 	char		*ctrl_op;
 
 }				t_command;
 
 
 int     str_chr(char *str, int c);
+int     ft_setenv(int argc, char **argv, t_env ***env);
+int     count_env_var(char **environ);
 
 char    **word_splitting(char *command);
 char   	**create_command_list(char *prt_str);
@@ -60,6 +63,7 @@ char	*parameter_expansion(char *word, t_env **env);
 
 void	destroy_arr(char **arr);
 void    word_expansion(char **words, t_env **env);
+void	destroy_env(t_env **env);
 
 t_command    **create_command_struct_list(char *prt_str, t_env **env);
 

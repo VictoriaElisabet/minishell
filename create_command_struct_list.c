@@ -86,6 +86,7 @@ t_command   *fill_command_struct(t_command *command, char **words)
 	argc = word_nbr - vars - 1;
 	add_variables(words, command, vars);
 	add_argv(words, command, vars, argc);
+	command->argc = argc;
 	if(!(command->ctrl_op = ft_strdup(words[word_nbr - 1])))
 		command->ctrl_op = NULL;
 	return(command);
@@ -110,11 +111,7 @@ t_command   **create_command_struct_list(char *prt_str, t_env **env)
 			{
 				word_expansion(words, env);
 				if((commands[i] = (t_command*)malloc(sizeof(t_command))))
-				{
-					//tilde_expansion(words, env);
-					//parameter_expansion(words, env);
 					commands[i] = fill_command_struct(commands[i], words);
-				}
 			}
 			destroy_arr(words);
 			i++;
