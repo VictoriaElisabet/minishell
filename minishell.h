@@ -54,6 +54,7 @@ typedef struct	s_command
 int     str_chr(char *str, int c);
 int     ft_setenv(int argc, char **argv, t_env ***env);
 int     count_env_var(char **environ);
+int     ft_unsetenv(int argc, char **argv, t_env ***env);
 
 char    **word_splitting(char *command);
 char   	**create_command_list(char *prt_str);

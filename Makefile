@@ -11,8 +11,8 @@
 # **************************************************************************** #
 
 NAME = minishell
-SRC = minishell.c word_splitting.c create_command_list.c parameter_expansion.c tilde_expansion.c create_command_struct_list.c expansions.c built_ins.c
-OBJECTS = minishell.o word_splitting.o create_command_list.o parameter_expansion.o tilde_expansion.o create_command_struct_list.o expansion.o built_ins.o
+SRC = minishell.c word_splitting.c create_command_list.c parameter_expansion.c tilde_expansion.c create_command_struct_list.c expansions.c setenv.c unsetenv.c
+OBJECTS = minishell.o word_splitting.o create_command_list.o parameter_expansion.o tilde_expansion.o create_command_struct_list.o expansion.o setenv.o unsetenv.o
 INC = ./
 
 all: $(NAME)

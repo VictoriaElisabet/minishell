@@ -192,7 +192,7 @@ int main()
 				i++;
 
 			}
-			ft_setenv(commands[0]->argc, commands[0]->argv, &env);
+			ft_unsetenv(commands[0]->argc, commands[0]->argv, &env);
 				i = 0;
 				while (env[i] != NULL)
 				{
