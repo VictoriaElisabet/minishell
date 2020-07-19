@@ -19,6 +19,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <dirent.h>
+#include <sys/wait.h>
 #include "./libft/libft.h"
 
 # define BUF_SIZE 32
@@ -52,15 +54,18 @@ typedef struct	s_command
 
 
 int     str_chr(char *str, int c);
-int     ft_setenv(int argc, char **argv, t_env ***env);
+int     ft_setenv(int argc, char *name, char *value, t_env ***env);
 int     count_env_var(char **environ);
 int     ft_unsetenv(int argc, char **argv, t_env ***env);
+int		ft_cd (int argc, char **argv, t_env ***env);
 
 char    **word_splitting(char *command);
 char   	**create_command_list(char *prt_str);
 char    **create_argv_list(char **argv, char **words);
+
 char	*tilde_expansion(char *word, t_env **env);
 char	*parameter_expansion(char *word, t_env **env);
+char	*check_env(t_env **env, char *name);
 
 void	destroy_arr(char **arr);
 void    word_expansion(char **words, t_env **env);

@@ -60,23 +60,23 @@ int     set_env(const char *name, const char *value, t_env **env)
     return (i);
 }
 
-int     ft_setenv(int argc, char **argv, t_env ***env)
+int     ft_setenv(int argc, char *name, char *value, t_env ***env)
 {
     int		index;
     t_env   **tmp;
-    char	*value;
+    char	*val;
 
     if (argc < 2 || argc > 3)
     {
         ft_printf("Incorrect number of arguments\n");
         return (-1);
     }
-    if (argv[1] == NULL || ft_strlen(argv[1]) == 0 || str_chr(argv[1], '=') == 1)
+    if (name == NULL || ft_strlen(name) == 0 || str_chr(name, '=') == 1)
 		return (-1);
-	argv[2] != NULL ? (value = argv[2]) : (value = "\0");
-    if ((index = set_env(argv[1], value, *env)) != 0)
+	value != NULL ? (val = value) : (val = "\0");
+    if ((index = set_env(name, val, *env)) != 0)
     {
-        if(index == -1 || !(tmp = add_env(argv[1], value, *env, index + 1)))
+        if(index == -1 || !(tmp = add_env(name, val, *env, index + 1)))
             return (-1);
         destroy_env(*env);
         *env = tmp;

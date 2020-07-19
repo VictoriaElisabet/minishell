@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expansions.c                                       :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vgrankul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,36 +12,18 @@
 
 #include "minishell.h"
 
-int     str_chr(char *str, int c)
+int echo(char **argv)
 {
     int i;
 
     i = 0;
-    while (str[i] != '\0')
+    while (argv[i] != NULL)
     {
-        if(str[i] == c)
-            return (1);
+        ft_printf("%s", argv[i]);
+        if (argv[i + 1] != NULL)
+            ft_printf(" ");
         i++;
     }
+    ft_printf("\n");
     return (0);
-}
-
-void    word_expansion(char **words, t_env **env)
-{
-    int i;
-
-    i = 0;
-    while (words[i] != NULL)
-    {
-        if (str_chr(words[i], '\'') != 1)
-        {
-            if (str_chr(words[i], '"') != 1)
-            {
-                //if ret = NULL?
-                words[i] = tilde_expansion(words[i], env);
-            }
-            words[i] = parameter_expansion(words[i], env);
-        }
-        i++;
-    }
 }

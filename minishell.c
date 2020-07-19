@@ -146,109 +146,131 @@ char    *read_prompt(char *prompt)
 	return (prt_str);
 }
 
+int	ctrl_function(char *ctrl_op, int status)
+{
+	ft_printf("op and status %s %d\n", ctrl_op, status);
+	if ((ft_strcmp(ctrl_op, "||") == 0) && status != 0)
+		return (1);
+	if ((ft_strcmp(ctrl_op, "&&") == 0) && status == 0)
+		return (1);
+	if (ft_strcmp(ctrl_op, ";") == 0 || ft_strcmp(ctrl_op, "\n") == 0)
+		return (1);
+	return (0);
+}
+
+char 	*search_path(char *name, char *path)
+{
+	DIR *dir;
+	struct dirent *dirent;
+	char	*file_path;
+	char	*tmp;
+
+	if ((dir = opendir(path)))
+	{
+		while ((dirent = readdir(dir)) != NULL)
+		{
+			if (ft_strcmp(dirent->d_name, name) == 0)
+			{
+				tmp = ft_strjoin (path, "/");
+				file_path = ft_strjoin(tmp, name);
+				free (tmp);
+				return (file_path);
+			}
+		}
+		//if closedir fails
+		closedir(dir);
+	}
+	return (NULL);
+}
+
+char	*find_executable(char *name, t_env **env)
+{
+	char *path;
+	char **paths;
+	char *file_path;
+	int i;
+
+	i = 0;
+	if ((path = check_env(env, "PATH")))
+	{
+		if ((paths = ft_strsplit(path, ':')))
+		{
+			while (paths[i] != NULL)
+			{
+				if ((file_path = search_path(name, paths[i])) != NULL)
+					return (file_path);
+				i++;
+			}
+		}
+	}
+	return (NULL);
+}
+
+int	exec_commands(t_command **commands, t_env **env)
+{
+	int status;
+	int i;
+	pid_t pid;
+	char	*file_path;
+
+	i = 0;
+	status = 0;
+	pid = 0;
+	while(commands[i] != NULL)
+	{
+		if (ctrl_function(commands[i]->ctrl_op, status) == 1)
+		{
+			
+			//if status = builtin (commands[i]);
+			//else
+			pid = fork();
+			//if (pid == -1)
+				//fork failed
+			if (pid == 0)
+			{
+				// if command[i] har slashes, kolla om ok med stat och ifall det är run the program med exec.
+				//annars sök efter i path. check stat att executable
+				//chlid
+				file_path = find_executable(commands[i]->argv[0], env);
+				if ((execve(file_path, commands[i]->argv, environ)) == -1)
+					ft_printf("Execution failed");
+				//free file path;
+			}
+			else
+			{
+				pid = waitpid(pid, &status, 0);
+				ft_printf("statis %d\n", status);
+				
+			}
+
+		}
+		i++;
+
+	}
+	return (status);
+}
+
 int main()
 {
 	char    *prt_str;
-	//char    **commands;
-	//char    **words;
-	//int     i;
 	t_env   **env;
-	//t_command	**commands;
-	//char 	**argv;
 	t_command **commands;
 
-	//commands = NULL;
 	env = (t_env**)malloc(count_env_var(environ) * sizeof(t_env*) + 1);
 	copy_env(environ, env);
 	int t = 0;
 	while(t < 2)
 	{
 		prt_str = read_prompt("Enter info: ");
-		ft_printf("prompt_str %s\n", prt_str);
 		//ska vara en egen loop med cond status, så att det stannar när status är fel
 		if (prt_str != NULL)
-		{
-			int i = 0;
-			int j = 0;
-			int k = 0;
 			commands = create_command_struct_list(prt_str, env);
-			while (commands[i] != NULL)
-			{
-				ft_printf("comm = %d\n", i);
-				j = 0;
-				while(commands[i]->variables[j] != NULL)
-				{
-					ft_printf("va %s\n", commands[i]->variables[j]);
-					j++;
-				}
-				k = 0;
-				while(commands[i]->argv[k] != NULL)
-				{
-					ft_printf("argv %s\n", commands[i]->argv[k]);
-					k++;
-				}
-				ft_printf("ctrl %s\n", commands[i]->ctrl_op);
-				
-				i++;
-
-			}
-			ft_unsetenv(commands[0]->argc, commands[0]->argv, &env);
-				i = 0;
-				while (env[i] != NULL)
-				{
-					ft_printf("env %s %s\n", env[i]->name, env[i]->value);
-					i++;
-				}
-			/*i = 0;
-				while (env[i] != NULL)
-			{
-				ft_printf("env %s %s\n", env[i]->name, env[i]->value);
-				i++;
-			}*/
-			/*commands = create_command_list(prt_str);
-			i = 0;
-			while(commands[i] != NULL)
-			{
-				words = split_commands(commands[i], comms);
-				int j = 0;
-				while(words[j] != NULL)
-				{
-					ft_printf("%d word %s\n", j, words[j]);
-					j++;
-				}
-				tilde_expansion(words, env);
-				parameter_expansion(words, env);
-				j = 0;
-				while(words[j] != NULL)
-				{
-					ft_printf("%d word %s\n", j, words[j]);
-					j++;
-				}
-				argv = create_argv_list(argv, words);
-				j = 0;
-				while(argv[j] != NULL)
-				{
-					ft_printf("argv %d argv %s\n", j, argv[j]);
-					j++;
-				}
-				destroy_arr(words);
-				//ft_printf("%d\n", count_words(commands[i]));
-				//execute comm
-				//free argv
-				i++;*/
-			}
-			free(prt_str);
-			destroy_commands(commands);
-			//destroy_arr(commands);
-			//destroy_arr(words);
-			
-		//}
+		if (commands != NULL)
+			exec_commands(commands, env);
+		free(prt_str);
+		destroy_commands(commands);
 		t++;
 	}
 	destroy_env(env);
 	return (EXIT_SUCCESS);
-    //int fd;
-    //fd = open(stdin, O_RDONLY);
-    
-    //printf("%d \n %d", getpid(), getppid());
 }

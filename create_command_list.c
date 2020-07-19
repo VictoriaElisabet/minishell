@@ -27,6 +27,7 @@ int     count_ctrl_op(char *prt_str)
 			while(prt_str[i] != '"' && prt_str[i] != '\'' && prt_str[i] != '\0')
 				i++;
 		}
+		//ha en striarr med all ctrl op som man kan jämföra med istöllet för att ha de på detta sätt.
 		if (prt_str[i + 1] == '\0' && prt_str[i] != ';' && prt_str[i] != '|' && prt_str[i] != '&')
 			count++;
 		if (prt_str[i] == '|' || prt_str[i] == '&' || prt_str[i] == ';')
