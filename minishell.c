@@ -70,13 +70,15 @@ int     count_env_var(char **environ)
 	return (i);
 }
 
-t_env    **copy_env(char **environ, t_env **env)
+t_env    **copy_env(char **environ)
 {
 	int i;
 	int j;
+	t_env **env;
 
 	i = 0;
 	j = 0;
+	env = (t_env**)malloc(count_env_var(environ) * sizeof(t_env*) + 1);
 	while(environ[i] != NULL)
 	{
 		env[i] = (t_env*)malloc(sizeof(t_env));
@@ -146,130 +148,30 @@ char    *read_prompt(char *prompt)
 	return (prt_str);
 }
 
-int	ctrl_function(char *ctrl_op, int status)
-{
-	ft_printf("op and status %s %d\n", ctrl_op, status);
-	if ((ft_strcmp(ctrl_op, "||") == 0) && status != 0)
-		return (1);
-	if ((ft_strcmp(ctrl_op, "&&") == 0) && status == 0)
-		return (1);
-	if (ft_strcmp(ctrl_op, ";") == 0 || ft_strcmp(ctrl_op, "\n") == 0)
-		return (1);
-	return (0);
-}
-
-char 	*search_path(char *name, char *path)
-{
-	DIR *dir;
-	struct dirent *dirent;
-	char	*file_path;
-	char	*tmp;
-
-	if ((dir = opendir(path)))
-	{
-		while ((dirent = readdir(dir)) != NULL)
-		{
-			if (ft_strcmp(dirent->d_name, name) == 0)
-			{
-				tmp = ft_strjoin (path, "/");
-				file_path = ft_strjoin(tmp, name);
-				free (tmp);
-				return (file_path);
-			}
-		}
-		//if closedir fails
-		closedir(dir);
-	}
-	return (NULL);
-}
-
-char	*find_executable(char *name, t_env **env)
-{
-	char *path;
-	char **paths;
-	char *file_path;
-	int i;
-
-	i = 0;
-	if ((path = check_env(env, "PATH")))
-	{
-		if ((paths = ft_strsplit(path, ':')))
-		{
-			while (paths[i] != NULL)
-			{
-				if ((file_path = search_path(name, paths[i])) != NULL)
-					return (file_path);
-				i++;
-			}
-		}
-	}
-	return (NULL);
-}
-
-int	exec_commands(t_command **commands, t_env **env)
-{
-	int status;
-	int i;
-	pid_t pid;
-	char	*file_path;
-
-	i = 0;
-	status = 0;
-	pid = 0;
-	while(commands[i] != NULL)
-	{
-		if (ctrl_function(commands[i]->ctrl_op, status) == 1)
-		{
-			
-			//if status = builtin (commands[i]);
-			//else
-			pid = fork();
-			//if (pid == -1)
-				//fork failed
-			if (pid == 0)
-			{
-				// if command[i] har slashes, kolla om ok med stat och ifall det är run the program med exec.
-				//annars sök efter i path. check stat att executable
-				//chlid
-				file_path = find_executable(commands[i]->argv[0], env);
-				if ((execve(file_path, commands[i]->argv, environ)) == -1)
-					ft_printf("Execution failed");
-				//free file path;
-			}
-			else
-			{
-				pid = waitpid(pid, &status, 0);
-				ft_printf("statis %d\n", status);
-				
-			}
-
-		}
-		i++;
-
-	}
-	return (status);
-}
-
 int main()
 {
 	char    *prt_str;
 	t_env   **env;
 	t_command **commands;
 
-	env = (t_env**)malloc(count_env_var(environ) * sizeof(t_env*) + 1);
-	copy_env(environ, env);
-	int t = 0;
-	while(t < 2)
+
+	// ifall env failar då?
+	env = copy_env(environ);
+	//int t = 0;
+	while(1)
 	{
-		prt_str = read_prompt("Enter info: ");
-		//ska vara en egen loop med cond status, så att det stannar när status är fel
+		prt_str = read_prompt("$> ");
 		if (prt_str != NULL)
+		{
 			commands = create_command_struct_list(prt_str, env);
-		if (commands != NULL)
-			exec_commands(commands, env);
-		free(prt_str);
-		destroy_commands(commands);
-		t++;
+			if (commands != NULL)
+			{
+				exec_commands(commands, env);
+				destroy_commands(commands);
+			}
+			free(prt_str);
+		}
+		//t++;
 	}
 	destroy_env(env);
 	return (EXIT_SUCCESS);
