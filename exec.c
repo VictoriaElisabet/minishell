@@ -73,42 +73,69 @@ int	ctrl_function(char *ctrl_op, int status)
 	return (0);
 }
 
+int		print_exec_error(t_command *command, int status)
+{
+	if(WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == 11)
+			ft_printf("Segmentation fault\n");
+	}
+	else if (status == 125)
+	{
+		ft_printf("%s: command not found\n", command->argv[0]);
+		return (125);
+	}
+	else if (status == 126)
+	{
+		ft_printf("%s: command not an executable\n", command->argv[0]);
+		return (126);
+	}
+	else if (status == 127)
+	{
+		ft_printf("%s: No such file or directory\n", command->argv[0]);
+		return (127);
+	}
+	return (EXIT_FAILURE);
+}
+
 int run_command(t_command *command, t_env **env)
 {
 	pid_t	pid;
 	char	*file_path;
-	int		status;
+	int 	status;
 
 	status = 0;
 	pid = fork();
 	if (pid == -1)
-	{
-		//fork failde;
-	}
+		return (print_exec_error(command, EXIT_FAILURE));
 	if (pid == 0)
 	{
-		// if command[i] har slashes, kolla om ok med stat och ifall det är run the program med exec.
-		//annars sök efter i path. check stat att executable !!!
-		//chlid
 		// change environ to my own env, need to be a char **arr
 		if (str_chr(command->argv[0], '/') == 1)
 			file_path = ft_strdup(command->argv[0]);
 		else
 			file_path = find_executable(command->argv[0], env);
 		if (!(file_path))
+			return (print_exec_error(command, 127));
+		if (access(file_path, F_OK) != -1)
 		{
-			ft_printf("%s: command not found\n", command->argv[0]);
-			return (127);
+			if(access(file_path, X_OK))
+				return (print_exec_error(command, 126));
+			if ((execve(file_path, command->argv, environ)) == -1)
+				return (print_exec_error(command, 125));
 		}
-		if ((execve(file_path, command->argv, environ)) == -1)
-			ft_printf("Execution failed");
+		else
+			return (print_exec_error(command, 127));
 		//free file path;
 	}
 	else
 	{
-		pid = waitpid(pid, &status, 0);			
+		//if waitpid fails?
+		pid = waitpid(pid, &status, 0);
 	}
-	return (status);
+	return ((print_exec_error(command, status)));
 }
 
 int	exec_commands(t_command **commands, t_env **env)
