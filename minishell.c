@@ -157,8 +157,8 @@ int main()
 
 	// ifall env failar då?
 	env = copy_env(environ);
-	//int t = 0;
-	while(1)
+	int t = 0;
+	while(t < 2)
 	{
 		prt_str = read_prompt("$> ");
 		if (prt_str != NULL)
@@ -171,7 +171,13 @@ int main()
 			}
 			free(prt_str);
 		}
-		//t++;
+		int i = 0;
+		while(env[i] != NULL)
+		{
+			ft_printf("%s %s\n", env[i]->name, env[i]->value);
+			i++;
+		}
+		t++;
 	}
 	destroy_env(env);
 	return (EXIT_SUCCESS);

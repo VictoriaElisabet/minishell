@@ -12,110 +12,56 @@
 
 #include "minishell.h"
 
-char	*remove_last(char *path)
+int		change_wdir(char *path, char **argv, t_env **env)
 {
-	int len;
-	char *new_path;
+	char	*old_pwd;
+	char	*pwd;
 
-	len = ft_strlen(path);
-	while(path[len] != '/' && len > 0)
+	if(!(old_pwd = getcwd(NULL, 0)))
+		return (EXIT_FAILURE);
+	if(chdir(path) == -1)
 	{
-		len--;
+		ft_printf("%s: %s: No such file or directory\n", argv[0], path);
+		return (EXIT_FAILURE);
 	}
-	new_path = ft_strsub(path, 0, len);
-	ft_printf("new %s\n", new_path);
-	return (new_path);
+	if (!(pwd = getcwd(NULL, 0)))
+		return (EXIT_FAILURE);
+	if (ft_setenv(2, "PWD", pwd, &env) != 0)
+		return (EXIT_FAILURE);
+	if (ft_setenv(2, "OLDPWD", old_pwd, &env) != 0)
+		return (EXIT_FAILURE);
+	free(pwd);
+	free(old_pwd);
+	return (0);
 }
 
-char    *correct_path(char *path)
+int ft_cd (int argc, char **argv, t_env **env)
 {
-	int i;
-	int j;
-	char	*tmp;
-	char	*dir;
-	char	*new_path;
-	int start;
+	char	*path;
 
-	i = 0;
-	tmp = ft_strnew(1);
-	new_path = ft_strnew(1);
-	while (path[i] != '\0')
-	{
-		if (path[i] == '/')
-		{
-			j = 1;
-			start = i;
-			while (path[i + 1] != '/' && path[i + 1] != '\0')
-			{
-				i++;
-				j++;
-			}
-			dir = ft_strsub(path, start, j);
-			ft_printf("tmp %s\n", dir);
-			if (ft_strcmp(dir, "/..") == 0)
-			{
-				ft_printf("hii");
-				
-				tmp = remove_last(new_path);
-				free(new_path);
-				new_path = tmp;
-			}
-			else
-			{
-			tmp = ft_strjoin(new_path, dir);
-			free(new_path);
-			new_path = tmp;
-			free(dir);
-			}
-
-		}		
-		i++;
-	}
-	ft_printf("PATH %s\n", new_path);
-	return (new_path);
-}
-
-
-int ft_cd (int argc, char **argv, t_env ***env)
-{
-	char *HOME;
-	char *PWD;
-	char *OLDPWD;
-	char *path;
-	char *tmp;
-
-	//ifall inte hittas och dessa är NULL?
-	HOME = check_env(*env, "HOME");
-	PWD = check_env(*env, "PWD");
-	OLDPWD = check_env(*env, "OLDPWD");
-	
 	if (argc > 2)
 	{
-		ft_printf("Too many arguments");
-		return (-1);
+		ft_printf("%s: too many arguments\n", argv[0]);
+		return (2);
 	}
-	if (argv[1] == NULL)
+	else if (argv[1] == NULL)
 	{
-		ft_printf("%s\n", PWD);
-		ft_setenv(2, "OLDPWD", PWD, env);
-		ft_setenv(2, "PWD", HOME, env);
-
+		if (!(path = check_env(env, "HOME")))
+		{
+			ft_printf("%s: HOME not set\n", argv[0]);
+			return (EXIT_FAILURE);
+		}
 	}
 	else if (argv[1][0] == '-')
 	{
-		ft_setenv(argc, "OLDPWD", PWD, env);
-		ft_setenv(argc, "PWD", OLDPWD, env);
+		if (!(path = check_env(env, "OLDPWD")))
+		{
+			ft_printf("%s: OLDPWD not set\n", argv[0]);
+			return (EXIT_FAILURE);
+		}
+		ft_printf("%s\n", path);
 	}
-	else if(argv[1][0] == '/')
-		correct_path(argv[1]);
 	else
-	{
-		tmp = ft_strjoin(PWD, "/");
-		path = ft_strjoin(tmp, argv[1]);
-		free (tmp);
-		correct_path(path);
-		//ft_setenv(argc, "OLDPWD", PWD, &env);
-		//ft_setenv(argc, "PWD", path, &env);
-	}
-	return (0);
+		path = argv[1];
+	return (change_wdir(path, argv, env));
 }
