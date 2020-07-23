@@ -58,31 +58,31 @@ char	*parameter_expansion(char *word, t_env **env)
 	int		i;
 	char	*replaced;
 	char	*tmp;
-    char    *result;
+	int 	braces;
 
 	i = 0;
-    result = word;
+	braces = 0;
 	while (word[i] != '\0')
 	{
 	    if (word[i] == '$')
 		{
+			if (word[i + 1] == '{')
+				braces = 1;
+			while (word[i + 1] != '\0' && word[i + 1] != '}' && word[i + 1] != '$' && word[i + 1] != '"')
 				i++;
-				while (word[i] != '\0' && word[i] != '}' && word[i] != '$' && word[i] != '"')
+			if ((replaced = replace_var(word, i + 1, env)))
+			{
+				if (braces == 1)
 					i++;
-                ft_printf("cee %c\n", word[i]);
-				if ((replaced = replace_var(word, i, env)))
+				if((tmp = ft_strjoin(replaced, &word[i + 1])) != NULL)
 				{
-					if(word[i] == '}')
-						i++;
-					if((tmp = ft_strjoin(replaced, &word[i])) != NULL)
-					{
-						free(result);
-						result = tmp;
-					}
-					free(replaced);
+					free(word);
+					word = tmp;
 				}
+				free(replaced);
+			}
 		}
 		i++;
 	}
-    return (result);		
+    return (word);		
 }
