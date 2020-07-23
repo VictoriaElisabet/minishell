@@ -12,35 +12,23 @@
 
 #include "minishell.h"
 
-int     count_env(t_env **env)
-{
-    int i;
-
-    i = 0;
-    while (env[i] != NULL)
-        i++;
-    return (i);
-}
-
-t_env    **remove_env(const char *name, t_env **env)
+char    **remove_env(const char *name, char **env)
 {
 	int     i;
 	int		j;
-	t_env   **new;
+	char   **new;
 	int		count;
 
 	i = 0;
 	j = 0;
-	count = count_env(env) - 1;
-	if((new = (t_env**)malloc((count * sizeof(t_env*) + 1))))
+	count = count_env_var(env) - 1;
+	if((new = (char**)malloc((count * sizeof(char*) + 1))))
 	{
 		while (j < count)
 		{
-			if (ft_strcmp (name, env[i]->name) == 0)
+			if (ft_strncmp (name, env[i], ft_strlen(name)) == 0)
 				i++;
-			if(!(new[j] = (t_env*)malloc(sizeof(t_env))))
-				return (NULL);
-			if(!(new[j]->name = ft_strdup(env[i]->name)) || !(new[j]->value = ft_strdup(env[i]->value)))
+			if(!(new[j] = ft_strdup(env[i])))
 				return (NULL);
 			i++;
 			j++;
@@ -50,23 +38,9 @@ t_env    **remove_env(const char *name, t_env **env)
 	return (new);
 }
 
-int     find_env(const char *name, t_env **env)
+int     ft_unsetenv(int argc, char **argv, char ***env)
 {
-    int i;
-
-    i = 0;
-    while (env[i] != NULL)
-    {
-        if (ft_strcmp(name, env[i]->name) == 0)
-            return (0);
-        i++;
-    }
-    return (i);
-}
-
-int     ft_unsetenv(int argc, char **argv, t_env ***env)
-{
-	t_env **tmp;
+	char **tmp;
 
 	if (argc != 2)
 	{
@@ -79,7 +53,7 @@ int     ft_unsetenv(int argc, char **argv, t_env ***env)
 	{
 		if(!(tmp = remove_env(argv[1], *env)))
 			return (-1);
-		destroy_env(*env);
+		destroy_arr(*env);
 		*env = tmp;
 	}
 	return (0);

@@ -92,7 +92,7 @@ t_command   *fill_command_struct(t_command *command, char **words)
 	return(command);
 }
 
-t_command   **create_command_struct_list(char *prt_str, t_env **env)
+t_command   **create_command_struct_list(char *prt_str, char **env)
 {
 	char		**command_list;
 	char		**words;

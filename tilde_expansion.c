@@ -12,49 +12,33 @@
 
 #include "minishell.h"
 
-char	*check_env(t_env **env, char *name)
-{
-	int i;
-
-	i = 0;
-	while(env[i] != NULL)
-	{
-		if (ft_strcmp(name, env[i]->name) == 0)
-			return (env[i]->value);
-		i++;
-	}
-	return (NULL);
-}
-
-char	*get_value(char *t_prefix, t_env **env)
+char	*get_value(char *t_prefix, char **env)
 {
 	char *value;
 
-	if ((ft_strcmp(t_prefix, "~/") == 0 || ft_strcmp(t_prefix, "~") == 0) && (value = check_env(env, "HOME")) != NULL)
+	if ((ft_strcmp(t_prefix, "~/") == 0 || ft_strcmp(t_prefix, "~") == 0) && (value = get_env_value("HOME", env)) != NULL)
 		return(value);
-	else if (ft_strcmp(&t_prefix[1], (value = check_env(env, "USER"))) == 0)
+	else if (ft_strcmp(&t_prefix[1], (value = get_env_value("USER", env))) == 0)
 	{
-		if ((value = check_env(env, "HOME")) != NULL)
+		if ((value = get_env_value("HOME", env)) != NULL)
 			return (value);
 	}
-	else if (ft_strcmp(t_prefix, "~+") == 0 && (value = check_env(env, "PWD")) != NULL)
+	else if (ft_strcmp(t_prefix, "~+") == 0 && (value = get_env_value("PWD", env)) != NULL)
 		return(value);
-	else if (ft_strcmp(t_prefix, "~-") == 0 && (value = check_env(env, "OLDPWD")) != NULL)
+	else if (ft_strcmp(t_prefix, "~-") == 0 && (value = get_env_value("OLDPWD", env)) != NULL)
 		return(value);
 	return(NULL);
 }
 
-char	*tilde_expansion(char *word, t_env **env)
+char	*tilde_expansion(char *word, char **env)
 {
     int     i;
     char    *t_prefix;
     char    *value;
-    char    *result;
     char    *tmp;
 
     i = 0;
     value = NULL;
-    result = word;
     if (word[0] == '~')
     {
         while(word[i] != '/' && word[i] != '\0')
@@ -64,10 +48,10 @@ char	*tilde_expansion(char *word, t_env **env)
 				if((tmp = ft_strjoin(value, &word[i])) != NULL)
 				{
 					free(word);
-					result = tmp;
+					word = tmp;
 				}
 			}
 			free(t_prefix);
     }
-    return (result);
+    return (word);
 }

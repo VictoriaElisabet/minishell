@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-extern char **environ;
-
 char 	*search_path(char *name, char *path)
 {
 	DIR *dir;
@@ -39,7 +37,7 @@ char 	*search_path(char *name, char *path)
 	return (NULL);
 }
 
-char	*find_executable(char *name, t_env **env)
+char	*find_executable(char *name, char **env)
 {
 	char *path;
 	char **paths;
@@ -47,7 +45,7 @@ char	*find_executable(char *name, t_env **env)
 	int i;
 
 	i = 0;
-	if ((path = check_env(env, "PATH")))
+	if ((path = get_env_value("PATH", env)))
 	{
 		if ((paths = ft_strsplit(path, ':')))
 		{
@@ -100,7 +98,7 @@ int		print_exec_error(t_command *command, int status)
 	return (EXIT_FAILURE);
 }
 
-int run_command(t_command *command, t_env **env)
+int run_command(t_command *command, char **env)
 {
 	pid_t	pid;
 	char	*file_path;
@@ -123,7 +121,7 @@ int run_command(t_command *command, t_env **env)
 		{
 			if(access(file_path, X_OK))
 				return (print_exec_error(command, 126));
-			if ((execve(file_path, command->argv, environ)) == -1)
+			if ((execve(file_path, command->argv, env)) == -1)
 				return (print_exec_error(command, 125));
 		}
 		else
@@ -138,7 +136,7 @@ int run_command(t_command *command, t_env **env)
 	return ((print_exec_error(command, status)));
 }
 
-int	exec_commands(t_command **commands, t_env **env)
+int	exec_commands(t_command **commands, char **env)
 {
 	int status;
 	int i;

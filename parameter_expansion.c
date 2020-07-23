@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	*replace_var(char *word, int j, t_env **env)
+char	*replace_var(char *word, int j, char **env)
 {
 	int		i;
 	int		k;
@@ -36,9 +36,9 @@ char	*replace_var(char *word, int j, t_env **env)
 		i = 0;
 		while(env[i] != NULL)
 		{
-			if(ft_strcmp(name, env[i]->name) == 0)
+			if(ft_strncmp(name, env[i], ft_strlen(name)) == 0)
 			{
-				if((value = ft_strjoin(begin, env[i]->value)) != NULL)
+				if((value = ft_strjoin(begin, get_env_value(name, env))) != NULL)
 				{
 					free(begin);
 					free(name);
@@ -53,7 +53,7 @@ char	*replace_var(char *word, int j, t_env **env)
 	return(ft_strnew(1));
 }
 
-char	*parameter_expansion(char *word, t_env **env)
+char	*parameter_expansion(char *word, char **env)
 {
 	int		i;
 	char	*replaced;

@@ -12,47 +12,52 @@
 
 #include "minishell.h"
 
-t_env    **add_env(const char *name, const char *value, t_env **env, int count)
+char    **add_env(const char *name, const char *value, char **env, int count)
 {
     int     i;
-    t_env   **new;
+    char   **new;
+    char    *tmp;
 
     i = 0;
-    if((new = (t_env**)malloc(count * sizeof(t_env*) + 1)))
+    if((new = (char**)malloc(count * sizeof(char*) + 1)))
     {
-        while (i < count)
+        while (env[i] != NULL)
         {
-            if(!(new[i] = (t_env*)malloc(sizeof(t_env))))
-                return (NULL);
-            if (env[i] == NULL)
-            {
-                if(!(new[i]->name = ft_strdup(name)) || !(new[i]->value = ft_strdup(value)))
-                    return (NULL);
-            }
-            else
-            {
-                if(!(new[i]->name = ft_strdup(env[i]->name)) || !(new[i]->value = ft_strdup(env[i]->value)))
-                    return (NULL);
-            }
+            if(!(new[i]= ft_strdup(env[i])))
+                ft_printf("jo");//return (EXIT_FAILURE);
+            i++;
+        }
+        if((tmp = ft_strjoin(name, "=")))
+        {
+            if(!(new[i] = ft_strjoin(tmp, value)))
+                ft_printf("jo");//return (NULL);
             i++;
         }
     }
     new[i] = NULL;
-    return (new);
+    return(new);
 }
 
-int     set_env(const char *name, const char *value, t_env **env)
+int     set_env(const char *name, const char *value, char **env)
 {
     int i;
+    char *tmp;
 
     i = 0;
+    if(!(name))
+        return(EXIT_FAILURE);
     while (env[i] != NULL)
     {
-        if (ft_strcmp(name, env[i]->name) == 0)
+        if (ft_strncmp(name, env[i], ft_strlen(name)) == 0)
         {
-            free(env[i]->value);
-            if(!(env[i]->value = ft_strdup(value)))
-                return (-1);
+            //laga bäter
+            free(env[i]);
+            if((tmp = ft_strjoin(name, "=")))
+            {
+                if(!(env[i] = ft_strjoin(tmp, value)))
+                    return (-1);
+                free(tmp);
+            }
             return (0);
         }
         i++;
@@ -60,10 +65,10 @@ int     set_env(const char *name, const char *value, t_env **env)
     return (i);
 }
 
-int     ft_setenv(int argc, char *name, char *value, t_env ***env)
+int     ft_setenv(int argc, char *name, char *value, char ***env)
 {
     int		index;
-    t_env   **tmp;
+    char   **tmp;
     char	*val;
 
     if (argc < 2 || argc > 3)
@@ -76,10 +81,12 @@ int     ft_setenv(int argc, char *name, char *value, t_env ***env)
 	value != NULL ? (val = value) : (val = "\0");
     if ((index = set_env(name, val, *env)) != 0)
     {
-        if(index == -1 || !(tmp = add_env(name, val, *env, index + 1)))
+        if(index == -1)
             return (-1);
-        destroy_env(*env);
-        *env = tmp;
+        tmp = add_env(name, val, *env, index + 1);
+        destroy_arr(*env);
+       *env = tmp;
+        //*env = add_env(name, val, *env, index + 1);
     }
     return (0);
 }

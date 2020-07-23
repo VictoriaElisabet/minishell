@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int     run_builtin(t_command *command, t_env **env)
+int     run_builtin(t_command *command, char **env)
 {
 	if (ft_strcmp(command->argv[0], "echo") == 0)
 		return (ft_echo(command->argv));

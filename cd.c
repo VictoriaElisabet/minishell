@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int		change_wdir(char *path, char **argv, t_env **env)
+int		change_wdir(char *path, char **argv, char **env)
 {
 	char	*old_pwd;
 	char	*pwd;
@@ -35,7 +35,7 @@ int		change_wdir(char *path, char **argv, t_env **env)
 	return (0);
 }
 
-int ft_cd (int argc, char **argv, t_env **env)
+int ft_cd (int argc, char **argv, char **env)
 {
 	char	*path;
 
@@ -46,7 +46,7 @@ int ft_cd (int argc, char **argv, t_env **env)
 	}
 	else if (argv[1] == NULL)
 	{
-		if (!(path = check_env(env, "HOME")))
+		if (!(path = get_env_value("HOME", env)))
 		{
 			ft_printf("%s: HOME not set\n", argv[0]);
 			return (EXIT_FAILURE);
@@ -54,7 +54,7 @@ int ft_cd (int argc, char **argv, t_env **env)
 	}
 	else if (argv[1][0] == '-')
 	{
-		if (!(path = check_env(env, "OLDPWD")))
+		if (!(path = get_env_value("OLDPWD", env)))
 		{
 			ft_printf("%s: OLDPWD not set\n", argv[0]);
 			return (EXIT_FAILURE);

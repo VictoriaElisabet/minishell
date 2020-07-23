@@ -26,7 +26,7 @@ int     str_chr(char *str, int c)
     return (0);
 }
 
-void    word_expansion(char **words, t_env **env)
+void    word_expansion(char **words, char **env)
 {
     int i;
 
@@ -37,7 +37,7 @@ void    word_expansion(char **words, t_env **env)
         {
             if (str_chr(words[i], '"') != 1)
             {
-                //if ret = NULL?
+                //if return = NULL?
                 words[i] = tilde_expansion(words[i], env);
             }
             words[i] = parameter_expansion(words[i], env);
