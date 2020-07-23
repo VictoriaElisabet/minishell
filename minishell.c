@@ -98,8 +98,8 @@ int main()
 
 	// ifall env failar då?
 	env = copy_env(environ);
-	int t = 0;
-	while(t < 2)
+	//int t = 0;
+	while(1)
 	{
 		prt_str = read_prompt("$> ");
 
@@ -108,7 +108,7 @@ int main()
 			commands = create_command_struct_list(prt_str, env);
 			if (commands != NULL)
 			{
-				exec_commands(commands, env);
+				exec_commands(commands, &env);
 				destroy_commands(commands);
 			}
 			free(prt_str);
@@ -119,7 +119,8 @@ int main()
 			ft_printf("%s\n", env[i]);
 			i++;
 		}
-		t++;
+		ft_printf("%d\n", find_env("fe", env));
+		//t++;
 	}
 	destroy_arr(env);
 	return (EXIT_SUCCESS);

@@ -57,12 +57,13 @@ int     str_chr(char *str, int c);
 int     ft_setenv(int argc, char *name, char *value, char ***env);
 int     count_env_var(char **environ);
 int     ft_unsetenv(int argc, char **argv, char ***env);
-int		ft_cd (int argc, char **argv, char **env);
+int		ft_cd (int argc, char **argv, char ***env);
 int		ft_echo(char **argv);
 int     is_builtin(t_command *command);
-int     run_builtin(t_command *command, char **env);
-int		exec_commands(t_command **commands, char **env);
+int     run_builtin(t_command *command, char ***env);
+int		exec_commands(t_command **commands, char ***env);
 int     find_env(const char *name, char **env);
+int     ft_env(t_command *command, char ***env);
 
 char    **word_splitting(char *command);
 char   	**create_command_list(char *prt_str);

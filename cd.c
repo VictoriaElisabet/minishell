@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int		change_wdir(char *path, char **argv, char **env)
+int		change_wdir(char *path, char **argv, char ***env)
 {
 	char	*old_pwd;
 	char	*pwd;
@@ -26,16 +26,16 @@ int		change_wdir(char *path, char **argv, char **env)
 	}
 	if (!(pwd = getcwd(NULL, 0)))
 		return (EXIT_FAILURE);
-	if (ft_setenv(2, "PWD", pwd, &env) != 0)
+	if (ft_setenv(2, "PWD", pwd, env) != 0)
 		return (EXIT_FAILURE);
-	if (ft_setenv(2, "OLDPWD", old_pwd, &env) != 0)
+	if (ft_setenv(2, "OLDPWD", old_pwd, env) != 0)
 		return (EXIT_FAILURE);
 	free(pwd);
 	free(old_pwd);
 	return (0);
 }
 
-int ft_cd (int argc, char **argv, char **env)
+int ft_cd (int argc, char **argv, char ***env)
 {
 	char	*path;
 
@@ -46,7 +46,7 @@ int ft_cd (int argc, char **argv, char **env)
 	}
 	else if (argv[1] == NULL)
 	{
-		if (!(path = get_env_value("HOME", env)))
+		if (!(path = get_env_value("HOME", *env)))
 		{
 			ft_printf("%s: HOME not set\n", argv[0]);
 			return (EXIT_FAILURE);
@@ -54,7 +54,7 @@ int ft_cd (int argc, char **argv, char **env)
 	}
 	else if (argv[1][0] == '-')
 	{
-		if (!(path = get_env_value("OLDPWD", env)))
+		if (!(path = get_env_value("OLDPWD", *env)))
 		{
 			ft_printf("%s: OLDPWD not set\n", argv[0]);
 			return (EXIT_FAILURE);

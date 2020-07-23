@@ -85,8 +85,7 @@ int     ft_setenv(int argc, char *name, char *value, char ***env)
             return (-1);
         tmp = add_env(name, val, *env, index + 1);
         destroy_arr(*env);
-       *env = tmp;
-        //*env = add_env(name, val, *env, index + 1);
+        *env = tmp;
     }
     return (0);
 }

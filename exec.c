@@ -136,7 +136,7 @@ int run_command(t_command *command, char **env)
 	return ((print_exec_error(command, status)));
 }
 
-int	exec_commands(t_command **commands, char **env)
+int	exec_commands(t_command **commands, char ***env)
 {
 	int status;
 	int i;
@@ -151,7 +151,7 @@ int	exec_commands(t_command **commands, char **env)
 			if (is_builtin(commands[i]) == 1)
 				status = run_builtin(commands[i], env);
 			else
-				status = run_command(commands[i], env);
+				status = run_command(commands[i], *env);
 			if (ctrl_function(commands[i]->ctrl_op, status) != 1)
 			{
 				if (commands[i + 1] != NULL)
