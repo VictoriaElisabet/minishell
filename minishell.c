@@ -36,6 +36,7 @@ void	destroy_commands(t_command **commands)
 	{
 		destroy_arr(commands[i]->variables);
 		destroy_arr(commands[i]->argv);
+		free(commands[i]->command);
 		free(commands[i]->ctrl_op);
 		free(commands[i]);
 		i++;
@@ -94,12 +95,14 @@ int main()
 	char    *prt_str;
 	char	   **env;
 	t_command **commands;
+	int		status;
 
 
 	// ifall env failar då?
+	status = 0;
 	env = copy_env(environ);
-	//int t = 0;
-	while(1)
+	int t = 0;
+	while(t < 1)
 	{
 		prt_str = read_prompt("$> ");
 
@@ -108,20 +111,19 @@ int main()
 			commands = create_command_struct_list(prt_str, env);
 			if (commands != NULL)
 			{
-				exec_commands(commands, &env);
+				status = exec_commands(commands, &env);
 				destroy_commands(commands);
 			}
 			free(prt_str);
 		}
-		int i = 0;
+	/*	int i = 0;
 		while(env[i] != NULL)
 		{
 			ft_printf("%s\n", env[i]);
 			i++;
-		}
-		ft_printf("%d\n", find_env("fe", env));
-		//t++;
+		}*/
+		t++;
 	}
 	destroy_arr(env);
-	return (EXIT_SUCCESS);
+	return (status);
 }

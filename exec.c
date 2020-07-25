@@ -52,11 +52,15 @@ char	*find_executable(char *name, char **env)
 			while (paths[i] != NULL)
 			{
 				if ((file_path = search_path(name, paths[i])) != NULL)
+				{
+					destroy_arr(paths);
 					return (file_path);
+				}
 				i++;
 			}
 		}
 	}
+	destroy_arr(paths);
 	return (NULL);
 }
 
@@ -143,13 +147,12 @@ int	exec_commands(t_command **commands, char ***env)
 
 	i = 0;
 	status = 0;
-	//skapa en char **env anv t_env
 	while(commands[i] != NULL)
 	{	
 		if (commands[i]->argc != 0)
 		{
 			if (is_builtin(commands[i]) == 1)
-				status = run_builtin(commands[i], env);
+				status = run_builtin(commands[i], env, status);
 			else
 				status = run_command(commands[i], *env);
 			if (ctrl_function(commands[i]->ctrl_op, status) != 1)

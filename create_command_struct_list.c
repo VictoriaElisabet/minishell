@@ -15,17 +15,11 @@
 int			count_vars(char **list)
 {
 	int i;
-	int	count;
 
 	i = 0;
-	count = 0;
-	while(list[i] != NULL)
-	{
-		if (str_chr(list[i], '=') == 1)
-			count++;
+	while(list[i] != NULL && str_chr(list[i], '=') == 1)
 		i++;
-	}
-	return (count);
+	return (i);
 }
 
 int			count_list(char **list)
@@ -75,7 +69,7 @@ void		add_argv(char **words, t_command *command, int start, int argc)
 	command->argv[j] = NULL;
 }
 
-t_command   *fill_command_struct(t_command *command, char **words)
+t_command   *fill_command_struct(char	*comm, t_command *command, char **words)
 {
 	int			argc;
 	int			vars;
@@ -84,6 +78,7 @@ t_command   *fill_command_struct(t_command *command, char **words)
 	word_nbr = count_list(words);
 	vars = count_vars(words);
 	argc = word_nbr - vars - 1;
+	command->command = ft_strdup(comm);
 	add_variables(words, command, vars);
 	add_argv(words, command, vars, argc);
 	command->argc = argc;
@@ -111,7 +106,7 @@ t_command   **create_command_struct_list(char *prt_str, char **env)
 			{
 				word_expansion(words, env);
 				if((commands[i] = (t_command*)malloc(sizeof(t_command))))
-					commands[i] = fill_command_struct(commands[i], words);
+					commands[i] = fill_command_struct(command_list[i], commands[i], words);
 			}
 			destroy_arr(words);
 			i++;

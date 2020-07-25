@@ -35,12 +35,12 @@ char	*env_strchr(const char *s, int c)
 	return (NULL);
 }
 
-int     count_env_var(char **environ)
+int     count_arr(char **arr)
 {
 	int i;
 
 	i = 0;
-	while(environ[i] != NULL)
+	while(arr[i] != NULL)
 		i++;
 	return (i);
 }
@@ -88,7 +88,7 @@ char    **copy_env(char **environ)
 	char **env;
 
 	i = 0;
-	env = (char**)malloc(count_env_var(environ) * sizeof(char*) + 1);
+	env = (char**)malloc(count_arr(environ) * sizeof(char*) + 1);
 	while(environ[i] != NULL)
 	{
 		if (ft_strncmp(environ[i],"SHELL=", 6) == 0)

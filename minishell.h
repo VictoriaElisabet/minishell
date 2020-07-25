@@ -45,6 +45,7 @@ typedef struct	s_env
 
 typedef struct	s_command
 {
+	char		*command;
 	char		**variables;
 	char		**argv;
 	int			argc;
@@ -55,20 +56,22 @@ typedef struct	s_command
 
 int     str_chr(char *str, int c);
 int     ft_setenv(int argc, char *name, char *value, char ***env);
-int     count_env_var(char **environ);
+int     count_arr(char **arr);
 int     ft_unsetenv(int argc, char **argv, char ***env);
 int		ft_cd (int argc, char **argv, char ***env);
 int		ft_echo(char **argv);
 int     is_builtin(t_command *command);
-int     run_builtin(t_command *command, char ***env);
+int     run_builtin(t_command *command, char ***env, int status);
 int		exec_commands(t_command **commands, char ***env);
 int     find_env(const char *name, char **env);
 int     ft_env(t_command *command, char ***env);
+int		ft_exit(int argc, char **argv, int status);
 
 char    **word_splitting(char *command);
 char   	**create_command_list(char *prt_str);
 char    **create_argv_list(char **argv, char **words);
 char    **copy_env(char **environ);
+char    **add_env(const char *name, const char *value, char **env, int count);
 
 char	*tilde_expansion(char *word, char **env);
 char	*parameter_expansion(char *word, char **env);
@@ -78,6 +81,7 @@ char	*check_env(t_env **env, char *name);
 void	destroy_arr(char **arr);
 void    word_expansion(char **words, char **env);
 void	destroy_env(t_env **env);
+void	destroy_commands(t_command **commands);
 
 t_command    **create_command_struct_list(char *prt_str, char **env);
 

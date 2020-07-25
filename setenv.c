@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   setenv.c                                           :+:      :+:    :+:   */
+/*   ft_setenv.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vgrankul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -31,6 +31,7 @@ char    **add_env(const char *name, const char *value, char **env, int count)
         {
             if(!(new[i] = ft_strjoin(tmp, value)))
                 ft_printf("jo");//return (NULL);
+            free (tmp);
             i++;
         }
     }

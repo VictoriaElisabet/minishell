@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   unsetenv.c                                         :+:      :+:    :+:   */
+/*   ft_unsetenv.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vgrankul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -21,7 +21,7 @@ char    **remove_env(const char *name, char **env)
 
 	i = 0;
 	j = 0;
-	count = count_env_var(env) - 1;
+	count = count_arr(env) - 1;
 	if((new = (char**)malloc((count * sizeof(char*) + 1))))
 	{
 		while (j < count)
