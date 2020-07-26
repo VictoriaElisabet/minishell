@@ -62,10 +62,12 @@ int		ft_cd (int argc, char **argv, char ***env);
 int		ft_echo(char **argv);
 int     is_builtin(t_command *command);
 int     run_builtin(t_command *command, char ***env, int status);
-int		exec_commands(t_command **commands, char ***env);
+int		exec_command(t_command *commands, char ***env);
 int     find_env(const char *name, char **env);
 int     ft_env(t_command *command, char ***env);
 int		ft_exit(int argc, char **argv, int status);
+
+int handle_command_list(char **command_list, char ***env);
 
 char    **word_splitting(char *command);
 char   	**create_command_list(char *prt_str);
@@ -81,8 +83,9 @@ char	*check_env(t_env **env, char *name);
 void	destroy_arr(char **arr);
 void    word_expansion(char **words, char **env);
 void	destroy_env(t_env **env);
-void	destroy_commands(t_command **commands);
+void	destroy_command(t_command *command);
 
-t_command    **create_command_struct_list(char *prt_str, char **env);
+//t_command    **create_command_struct_list(char *prt_str, char **env);
+t_command   *create_command_struct(char *cmd, char **env);
 
 #endif

@@ -27,21 +27,13 @@ void	destroy_arr(char **arr)
 	free(arr);
 }
 
-void	destroy_commands(t_command **commands)
+void	destroy_command(t_command *command)
 {
-	int i;
-
-	i = 0;
-	while(commands[i] != NULL)
-	{
-		destroy_arr(commands[i]->variables);
-		destroy_arr(commands[i]->argv);
-		free(commands[i]->command);
-		free(commands[i]->ctrl_op);
-		free(commands[i]);
-		i++;
-	}
-	free(commands);
+	destroy_arr(command->variables);
+	destroy_arr(command->argv);
+	free(command->command);
+	free(command->ctrl_op);
+	free(command);
 }
 
 char    *read_prompt(char *prompt)
@@ -94,7 +86,7 @@ int main()
 {
 	char    *prt_str;
 	char	   **env;
-	t_command **commands;
+	char	**command_list;
 	int		status;
 
 
@@ -105,14 +97,16 @@ int main()
 	while(t < 1)
 	{
 		prt_str = read_prompt("$> ");
-
 		if (prt_str != NULL)
 		{
-			commands = create_command_struct_list(prt_str, env);
-			if (commands != NULL)
+			//commands = create_command_struct_list(prt_str, env);
+			command_list = create_command_list(prt_str);
+			if (command_list != NULL)
 			{
-				status = exec_commands(commands, &env);
-				destroy_commands(commands);
+				handle_command_list(command_list, &env);
+				destroy_arr(command_list);
+				//status = exec_commands(commands, &env);
+				//destroy_commands(commands);
 			}
 			free(prt_str);
 		}

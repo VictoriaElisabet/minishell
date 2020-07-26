@@ -64,17 +64,6 @@ char	*find_executable(char *name, char **env)
 	return (NULL);
 }
 
-int	ctrl_function(char *ctrl_op, int status)
-{
-	if ((ft_strcmp(ctrl_op, "||") == 0) && status != 0)
-		return (1);
-	if ((ft_strcmp(ctrl_op, "&&") == 0) && status == 0)
-		return (1);
-	if (ft_strcmp(ctrl_op, ";") == 0 || ft_strcmp(ctrl_op, "\n") == 0)
-		return (1);
-	return (0);
-}
-
 int		print_exec_error(t_command *command, int status)
 {
 	if(WIFEXITED(status))
@@ -140,28 +129,19 @@ int run_command(t_command *command, char **env)
 	return ((print_exec_error(command, status)));
 }
 
-int	exec_commands(t_command **commands, char ***env)
+int	exec_command(t_command *command, char ***env)
 {
 	int status;
-	int i;
+	//int i;
 
-	i = 0;
+	//i = 0;
 	status = 0;
-	while(commands[i] != NULL)
-	{	
-		if (commands[i]->argc != 0)
-		{
-			if (is_builtin(commands[i]) == 1)
-				status = run_builtin(commands[i], env, status);
-			else
-				status = run_command(commands[i], *env);
-			if (ctrl_function(commands[i]->ctrl_op, status) != 1)
-			{
-				if (commands[i + 1] != NULL)
-					i++;
-			}
-		}
-		i++;
+	if (command->argc != 0)
+	{
+		if (is_builtin(command) == 1)
+			status = run_builtin(command, env, status);
+		else
+			status = run_command(command, *env);
 	}
 	return (status);
 }

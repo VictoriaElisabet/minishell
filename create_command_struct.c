@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_command_struct_list.c                       :+:      :+:    :+:   */
+/*   create_command_struct.c                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vgrankul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -87,33 +87,22 @@ t_command   *fill_command_struct(char	*comm, t_command *command, char **words)
 	return(command);
 }
 
-t_command   **create_command_struct_list(char *prt_str, char **env)
+t_command   *create_command_struct(char *cmd, char **env)
 {
-	char		**command_list;
 	char		**words;
-	t_command	**commands;
-	int     	comm_nbr;
-	int			i;
+	t_command	*command;
+	//int     	comm_nbr;
+	//int			i;
 
-	i = 0;
-	command_list = create_command_list(prt_str);
-	comm_nbr = count_list(command_list);
-	if ((commands = (t_command**)malloc(comm_nbr *sizeof(t_command*) + 1)) != NULL)
+	//i = 0;
+
+	if((words = word_splitting(cmd)))
 	{
-		while (command_list[i] != NULL)
-		{
-			if((words = word_splitting(command_list[i])))
-			{
-				word_expansion(words, env);
-				if((commands[i] = (t_command*)malloc(sizeof(t_command))))
-					commands[i] = fill_command_struct(command_list[i], commands[i], words);
-			}
-			destroy_arr(words);
-			i++;
-		}
+		word_expansion(words, env);
+		if((command = (t_command*)malloc(sizeof(t_command))))
+		    command = fill_command_struct(cmd, command, words);
+		destroy_arr(words);
 	}
-	destroy_arr(command_list);
-	commands[i] = NULL;
-	return (commands);
+	return (command);
 }
 
