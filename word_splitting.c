@@ -82,19 +82,13 @@ char    **word_splitting(char *command)
     i = 0;
     words_nbr = count_words(command);
     if(!(words = (char**)malloc(words_nbr * sizeof(char*) + 1)))
-	{
-		ft_printf("Malloc failed");
-		exit(EXIT_FAILURE);
-	}
+        return (NULL);
     while (j < words_nbr)
     {
 		while ((command[i] == ' ' || command[i] == '\t') && command[i] != '\0')
 			i++;
         if(!(words[j] = ft_strsub(&command[i], 0, count_wordlength(&command[i]))))
-		{
-			ft_printf("Malloc failed");
-			exit(EXIT_FAILURE);
-		}
+            return (NULL);
         i = i + count_wordlength(&command[i]);
         j++;
     }

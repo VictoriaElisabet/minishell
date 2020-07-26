@@ -41,7 +41,8 @@ void		add_variables(char **words, t_command *command, int vars)
 	{
 		while (words[i] != NULL && vars > 0)
 		{
-			command->variables[i] = ft_strdup(words[i]);
+			if(!(command->variables[i] = ft_strdup(words[i])))
+				return (NULL);
 			i++;
 			vars--;
 		}
@@ -60,7 +61,8 @@ void		add_argv(char **words, t_command *command, int start, int argc)
 	{
 		while (words[i] != NULL && argc > 0)
 		{
-			command->argv[j] = ft_strdup(words[i]);
+			if(!(command->argv[j] = ft_strdup(words[i])))
+				return (NULL);
 			i++;
 			j++;
 			argc--;
@@ -78,7 +80,8 @@ t_command   *fill_command_struct(char	*comm, t_command *command, char **words)
 	word_nbr = count_list(words);
 	vars = count_vars(words);
 	argc = word_nbr - vars - 1;
-	command->command = ft_strdup(comm);
+	if(!(command->command = ft_strdup(comm)))
+		command->command = NULL;
 	add_variables(words, command, vars);
 	add_argv(words, command, vars, argc);
 	command->argc = argc;
@@ -91,10 +94,6 @@ t_command   *create_command_struct(char *cmd, char **env)
 {
 	char		**words;
 	t_command	*command;
-	//int     	comm_nbr;
-	//int			i;
-
-	//i = 0;
 
 	if((words = word_splitting(cmd)))
 	{
@@ -105,4 +104,3 @@ t_command   *create_command_struct(char *cmd, char **env)
 	}
 	return (command);
 }
-

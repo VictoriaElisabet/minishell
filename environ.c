@@ -88,17 +88,23 @@ char    **copy_env(char **environ)
 	char **env;
 
 	i = 0;
-	env = (char**)malloc(count_arr(environ) * sizeof(char*) + 1);
-	while(environ[i] != NULL)
+	if((env = (char**)malloc(count_arr(environ) * sizeof(char*) + 1)))
 	{
-		if (ft_strncmp(environ[i],"SHELL=", 6) == 0)
+		while(environ[i] != NULL)
 		{
-			//borde kanske vara pwd
-			env[i] = ft_strdup("SHELL=/home/vgrankul/projects/minishell/minishell");
+			if (ft_strncmp(environ[i],"SHELL=", 6) == 0)
+			{
+				//borde kanske vara pwd
+				if(!(env[i] = ft_strdup("SHELL=/home/vgrankul/projects/minishell/minishell")))
+					return (NULL);
+			}
+			else
+			{
+				if(!(env[i] = ft_strdup(environ[i])))
+					return (NULL);
+			}
+			i++;
 		}
-		else
-			env[i] = ft_strdup(environ[i]);
-		i++;
 	}
 	env[i] = NULL;
 	return(env);

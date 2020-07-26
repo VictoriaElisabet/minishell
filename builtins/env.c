@@ -62,18 +62,18 @@ char    *new_command(char *command)
 
 int     ft_env(t_command *command, char ***env)
 {
-	int i;
-	char *name;
-	char *value;
+//	int i;
+//	char *name;
+//	char *value;
 	int     status;
-	char    *comm_str;
-	t_command **commands;
+//	char    *comm_str;
+//	t_command **commands;
 
 	//ska enfast ändra för env i denna funk
 	status = 0;
 	if (command->argc == 1)
 		print_env(*env);
-	else
+/*	else
 	{
 		i = 1;
 		while (command->argv[i] != NULL && (str_chr(command->argv[i], '=') == 1))
@@ -98,6 +98,6 @@ int     ft_env(t_command *command, char ***env)
 		}
 		else
 			print_env(*env);
-	}
+	}*/
 	return (status);
 }

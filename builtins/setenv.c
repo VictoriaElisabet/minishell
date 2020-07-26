@@ -24,13 +24,13 @@ char    **add_env(const char *name, const char *value, char **env, int count)
         while (env[i] != NULL)
         {
             if(!(new[i]= ft_strdup(env[i])))
-                ft_printf("jo");//return (EXIT_FAILURE);
+                return (NULL);
             i++;
         }
         if((tmp = ft_strjoin(name, "=")))
         {
             if(!(new[i] = ft_strjoin(tmp, value)))
-                ft_printf("jo");//return (NULL);
+                return (NULL);
             free (tmp);
             i++;
         }
@@ -51,12 +51,11 @@ int     set_env(const char *name, const char *value, char **env)
     {
         if (ft_strncmp(name, env[i], ft_strlen(name)) == 0)
         {
-            //laga bäter
             free(env[i]);
             if((tmp = ft_strjoin(name, "=")))
             {
                 if(!(env[i] = ft_strjoin(tmp, value)))
-                    return (-1);
+                    return (EXIT_FAILURE);
                 free(tmp);
             }
             return (0);
@@ -78,13 +77,14 @@ int     ft_setenv(int argc, char *name, char *value, char ***env)
         return (-1);
     }
     if (name == NULL || ft_strlen(name) == 0 || str_chr(name, '=') == 1)
-		return (-1);
+		return (EXIT_FAILURE);
 	value != NULL ? (val = value) : (val = "\0");
     if ((index = set_env(name, val, *env)) != 0)
     {
         if(index == -1)
-            return (-1);
-        tmp = add_env(name, val, *env, index + 1);
+            return (EXIT_FAILURE);
+        if(!(tmp = add_env(name, val, *env, index + 1)))
+            return (EXIT_FAILURE);
         destroy_arr(*env);
         *env = tmp;
     }

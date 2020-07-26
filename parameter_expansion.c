@@ -28,7 +28,7 @@ char	*replace_var(char *word, int j, char **env)
 		j--;
 	}
 	if(!(begin = ft_strsub(word, 0, i)))
-		begin = ft_strnew(1);
+		begin = ft_strcpy(ft_strnew(1), "\0");
 	while(ft_isalnum(word[i + k]) != 1 && word[i + k] != '\0' && j-- > 0)
 		k++;
 	if((name = ft_strsub(&word[i + k], 0, j)) != NULL)
@@ -50,7 +50,7 @@ char	*replace_var(char *word, int j, char **env)
 	}
 	free(name);
 	free(begin);
-	return(ft_strnew(1));
+	return(ft_strcpy(ft_strnew(1), "\0"));
 }
 
 char	*parameter_expansion(char *word, char **env)

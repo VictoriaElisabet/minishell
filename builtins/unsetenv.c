@@ -35,12 +35,6 @@ char    **remove_env(const char *name, char **env)
 		}
 	}
 	new[j] = NULL;
-	j = 0;
-	while(new[j] != NULL)
-	{
-		ft_printf("%s\n", new[j]);
-		j++;
-	}
 	return (new);
 }
 
@@ -51,14 +45,14 @@ int     ft_unsetenv(int argc, char **argv, char ***env)
 	if (argc != 2)
 	{
 		ft_printf("Incorrect number of arguments\n");
-		return (-1);
+		return (2);
 	}
 	if (argv[1] == NULL || ft_strlen(argv[1]) == 0 || str_chr(argv[1], '=') == 1)
-		return (-1);
+		return (EXIT_FAILURE);
 	if (find_env(argv[1], *env) == 0)
 	{
 		if(!(tmp = remove_env(argv[1], *env)))
-			return (-1);
+			return (EXIT_FAILURE);
 		destroy_arr(*env);
 		*env = tmp;
 	}

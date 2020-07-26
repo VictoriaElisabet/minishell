@@ -12,7 +12,16 @@
 
 #include "minishell.h"
 
-int	ctrl_function(char *ctrl_op, int status)
+void	destroy_command(t_command *command)
+{
+	destroy_arr(command->variables);
+	destroy_arr(command->argv);
+	free(command->command);
+	free(command->ctrl_op);
+	free(command);
+}
+
+int	    ctrl_function(char *ctrl_op, int status)
 {
 	if ((ft_strcmp(ctrl_op, "||") == 0) && status != 0)
 		return (1);
@@ -23,7 +32,7 @@ int	ctrl_function(char *ctrl_op, int status)
 	return (0);
 }
 
-int handle_command_list(char **command_list, char ***env)
+int     handle_command_list(char **command_list, char ***env)
 {
     int status;
     int i;
@@ -40,6 +49,7 @@ int handle_command_list(char **command_list, char ***env)
 			if (command_list[i + 1] != NULL)
 				i++;
 		}
+        destroy_command(command);
         i++;
     }
     return (status);

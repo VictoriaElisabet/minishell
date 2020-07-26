@@ -25,13 +25,16 @@ char 	*search_path(char *name, char *path)
 		{
 			if (ft_strcmp(dirent->d_name, name) == 0)
 			{
-				tmp = ft_strjoin (path, "/");
-				file_path = ft_strjoin(tmp, name);
-				free (tmp);
-				return (file_path);
+				if((tmp = ft_strjoin (path, "/")))
+				{
+					if((file_path = ft_strjoin(tmp, name)))
+					{
+						free (tmp);
+						return (file_path);
+					}
+				}
 			}
 		}
-		//if closedir fails
 		closedir(dir);
 	}
 	return (NULL);
@@ -103,7 +106,6 @@ int run_command(t_command *command, char **env)
 		return (print_exec_error(command, EXIT_FAILURE));
 	if (pid == 0)
 	{
-		// change environ to my own env, need to be a char **arr
 		if (str_chr(command->argv[0], '/') == 1)
 			file_path = ft_strdup(command->argv[0]);
 		else
@@ -119,22 +121,17 @@ int run_command(t_command *command, char **env)
 		}
 		else
 			return (print_exec_error(command, 127));
-		//free file path;
+		free(file_path);
 	}
 	else
-	{
-		//if waitpid fails?
 		pid = waitpid(pid, &status, 0);
-	}
 	return ((print_exec_error(command, status)));
 }
 
 int	exec_command(t_command *command, char ***env)
 {
 	int status;
-	//int i;
 
-	//i = 0;
 	status = 0;
 	if (command->argc != 0)
 	{
