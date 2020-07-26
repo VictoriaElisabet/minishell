@@ -69,14 +69,7 @@ char	*find_executable(char *name, char **env)
 
 int		print_exec_error(t_command *command, int status)
 {
-	if(WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
-	{
-		if (WTERMSIG(status) == 11)
-			ft_printf("Segmentation fault\n");
-	}
-	else if (status == 125)
+	if (status == 125)
 	{
 		ft_printf("%s: command not found\n", command->argv[0]);
 		return (125);
@@ -90,6 +83,13 @@ int		print_exec_error(t_command *command, int status)
 	{
 		ft_printf("%s: No such file or directory\n", command->argv[0]);
 		return (127);
+	}
+	else if(WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == 11)
+			ft_printf("Segmentation fault\n");
 	}
 	return (EXIT_FAILURE);
 }
@@ -111,7 +111,7 @@ int run_command(t_command *command, char **env)
 		else
 			file_path = find_executable(command->argv[0], env);
 		if (!(file_path))
-			return (print_exec_error(command, 127));
+			return (print_exec_error(command, 125));
 		if (access(file_path, F_OK) != -1)
 		{
 			if(access(file_path, X_OK))

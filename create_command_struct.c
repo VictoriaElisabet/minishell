@@ -42,7 +42,7 @@ void		add_variables(char **words, t_command *command, int vars)
 		while (words[i] != NULL && vars > 0)
 		{
 			if(!(command->variables[i] = ft_strdup(words[i])))
-				return (NULL);
+				command->variables[i] = NULL;
 			i++;
 			vars--;
 		}
@@ -62,7 +62,7 @@ void		add_argv(char **words, t_command *command, int start, int argc)
 		while (words[i] != NULL && argc > 0)
 		{
 			if(!(command->argv[j] = ft_strdup(words[i])))
-				return (NULL);
+				command->argv[j] = NULL;
 			i++;
 			j++;
 			argc--;

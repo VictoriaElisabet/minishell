@@ -64,7 +64,7 @@ int     is_builtin(t_command *command);
 int     run_builtin(t_command *command, char ***env, int status);
 int		exec_command(t_command *commands, char ***env);
 int     find_env(const char *name, char **env);
-int     ft_env(t_command *command, char ***env);
+int     ft_env(t_command *command, char **env);
 int		ft_exit(int argc, char **argv, int status);
 
 int handle_command_list(char **command_list, char ***env);

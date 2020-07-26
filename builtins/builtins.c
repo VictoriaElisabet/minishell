@@ -21,7 +21,7 @@ int     run_builtin(t_command *command, char ***env, int status)
 	if (ft_strcmp(command->argv[0], "exit") == 0)
 		return (ft_exit(command->argc, command->argv, status));
 	if (ft_strcmp(command->argv[0], "env") == 0)
-		return (ft_env(command, env));
+		return (ft_env(command, *env));
 	if (ft_strcmp(command->argv[0], "setenv") == 0)
 		return (ft_setenv(command->argc, command->argv[1], command->argv[2], env));
 	if (ft_strcmp(command->argv[0], "unsetenv") == 0)
