@@ -82,7 +82,6 @@ int     ft_env(t_command *command, char **env)
 	char	*comm;
 	char	**command_list;
 
-
 	status = 0;
 	tmp = copy_env(env);
 	if (command->argc == 1)
