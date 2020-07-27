@@ -12,22 +12,21 @@
 
 #include "minishell.h"
 
-int     count_ctrl_op(char *prt_str)
+int		count_ctrl_op(char *prt_str)
 {
 	int count;
 	int i;
 
 	i = 0;
 	count = 0;
-	while(prt_str[i] != '\0')
+	while (prt_str[i] != '\0')
 	{
-		if(prt_str[i] == '"' || prt_str[i] == '\'')
+		if (prt_str[i] == '"' || prt_str[i] == '\'')
 		{
 			i++;
-			while(prt_str[i] != '"' && prt_str[i] != '\'' && prt_str[i] != '\0')
+			while (prt_str[i] != '"' && prt_str[i] != '\'' && prt_str[i] != '\0')
 				i++;
 		}
-		//ha en striarr med all ctrl op som man kan jämföra med istöllet för att ha de på detta sätt.
 		if (prt_str[i + 1] == '\0' && prt_str[i] != ';' && prt_str[i] != '|' && prt_str[i] != '&')
 			count++;
 		if (prt_str[i] == '|' || prt_str[i] == '&' || prt_str[i] == ';')
@@ -36,22 +35,22 @@ int     count_ctrl_op(char *prt_str)
 				i++;
 			count++;
 		}
-		i++;        
+		i++;
 	}
 	return (count);
 }
 
-int     count_commlength(char *prt_str)
+int		count_commlength(char *prt_str)
 {
 	int i;
 
 	i = 0;
-	while(prt_str[i] != '\0')
+	while (prt_str[i] != '\0')
 	{
-		if(prt_str[i] == '"' || prt_str[i] == '\'')
+		if (prt_str[i] == '"' || prt_str[i] == '\'')
 		{
 			i++;
-			while(prt_str[i] != '"' && prt_str[i] != '\'' && prt_str[i] != '\0')
+			while (prt_str[i] != '"' && prt_str[i] != '\'' && prt_str[i] != '\0')
 				i++;
 		}
 		if (prt_str[i] == '|' || prt_str[i] == '&' || prt_str[i] == ';')
@@ -68,19 +67,19 @@ int     count_commlength(char *prt_str)
 
 char	**create_command_list(char *prt_str)
 {
-	char    **commands;
-	int     i;
-	int     j;
-	int     comms;
+	char	**commands;
+	int		i;
+	int		j;
+	int		comms;
 
 	j = 0;
 	i = 0;
 	comms = count_ctrl_op(prt_str);
-	if((commands = (char**)malloc(comms * sizeof(char*) + 1)))
+	if ((commands = (char**)malloc(comms * sizeof(char*) + 1)))
 	{
 		while (j < comms)
 		{
-			if((commands[j] = ft_strsub(&prt_str[i], 0, count_commlength(&prt_str[i]))))
+			if ((commands[j] = ft_strsub(&prt_str[i], 0, count_commlength(&prt_str[i]))))
 				i = i + count_commlength(&prt_str[i]);
 			j++;
 		}

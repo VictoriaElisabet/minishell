@@ -12,18 +12,18 @@
 
 #include "minishell.h"
 
-int ft_echo(char **argv)
+int		ft_echo(char **argv)
 {
-    int i;
+	int i;
 
-    i = 1;
-    while (argv[i] != NULL)
-    {
-        ft_printf("%s", argv[i]);
-        if (argv[i + 1] != NULL)
-            ft_printf(" ");
-        i++;
-    }
-    ft_printf("\n");
-    return (0);
+	i = 1;
+	while (argv[i] != NULL)
+	{
+		ft_printf("%s", argv[i]);
+		if (argv[i + 1] != NULL)
+			ft_printf(" ");
+		i++;
+	}
+	ft_printf("\n");
+	return (0);
 }

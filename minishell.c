@@ -14,30 +14,30 @@
 
 extern char **environ;
 
-char    *read_prompt(char *prompt)
+char	*read_prompt(char *prompt)
 {
-	int     ret;
-	char     ch[2];
-	char    *prt_str;
-	char    *tmp;
+	int		ret;
+	char	ch[2];
+	char	*prt_str;
+	char	*tmp;
 
 	prt_str = NULL;
 	ft_printf("%s", prompt);
-	while((ret = read(0, &ch, 1)) > 0)
-	{   
+	while ((ret = read(0, &ch, 1)) > 0)
+	{
 		ch[ret] = '\0';
 		if (prt_str == NULL)
-			if(!(prt_str = ft_strnew(0)))
+			if (!(prt_str = ft_strnew(0)))
 				return (NULL);
 		if ((int)ch[0] == EOF || ch[0] == '\n')
 		{
-			if(!(tmp = ft_strjoin(prt_str, ch)))
+			if (!(tmp = ft_strjoin(prt_str, ch)))
 				return (NULL);
 			free(prt_str);
 			prt_str = tmp;
 			return (prt_str);
 		}
-		if(!(tmp = ft_strjoin(prt_str, ch)))
+		if (!(tmp = ft_strjoin(prt_str, ch)))
 			return (NULL);
 		free(prt_str);
 		prt_str = tmp;
@@ -47,19 +47,17 @@ char    *read_prompt(char *prompt)
 	return (prt_str);
 }
 
-int main()
+int		main(void)
 {
 	char	*prt_str;
 	char	**env;
 	char	**command_list;
 	int		status;
 
-
-	// ifall env failar då?
 	status = 0;
+	// ifall env failar då?
 	env = copy_env(environ);
-	int t = 0;
-	while(t < 1)
+	while (1)
 	{
 		prt_str = read_prompt("$> ");
 		if (prt_str != NULL)
@@ -72,7 +70,6 @@ int main()
 			}
 			free(prt_str);
 		}
-		t++;
 	}
 	destroy_arr(env);
 	return (status);

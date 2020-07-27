@@ -17,10 +17,20 @@ void	destroy_arr(char **arr)
 	int i;
 
 	i = 0;
-	while(arr[i] != NULL)
+	while (arr[i] != NULL)
 	{
 		free(arr[i]);
 		i++;
 	}
 	free(arr);
+}
+
+int			count_list(char **list)
+{
+	int i;
+
+	i = 0;
+	while (list[i] != NULL)
+		i++;
+	return (i);
 }

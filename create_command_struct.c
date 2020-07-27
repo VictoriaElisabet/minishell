@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_command_struct.c                       :+:      :+:    :+:   */
+/*   create_command_struct.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vgrankul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -17,17 +17,7 @@ int			count_vars(char **list)
 	int i;
 
 	i = 0;
-	while(list[i] != NULL && str_chr(list[i], '=') == 1)
-		i++;
-	return (i);
-}
-
-int			count_list(char **list)
-{
-	int i;
-
-	i = 0;
-	while (list[i] != NULL)
+	while (list[i] != NULL && str_chr(list[i], '=') == 1)
 		i++;
 	return (i);
 }
@@ -37,11 +27,11 @@ void		add_variables(char **words, t_command *command, int vars)
 	int i;
 
 	i = 0;
-	if((command->variables = (char**)malloc(vars *sizeof(char*) + 1)))
+	if ((command->variables = (char**)malloc(vars * sizeof(char*) + 1)))
 	{
 		while (words[i] != NULL && vars > 0)
 		{
-			if(!(command->variables[i] = ft_strdup(words[i])))
+			if (!(command->variables[i] = ft_strdup(words[i])))
 				command->variables[i] = NULL;
 			i++;
 			vars--;
@@ -61,7 +51,7 @@ void		add_argv(char **words, t_command *command, int start, int argc)
 	{
 		while (words[i] != NULL && argc > 0)
 		{
-			if(!(command->argv[j] = ft_strdup(words[i])))
+			if (!(command->argv[j] = ft_strdup(words[i])))
 				command->argv[j] = NULL;
 			i++;
 			j++;
@@ -71,7 +61,7 @@ void		add_argv(char **words, t_command *command, int start, int argc)
 	command->argv[j] = NULL;
 }
 
-t_command   *fill_command_struct(char	*comm, t_command *command, char **words)
+t_command	*fill_command_struct(char *comm, t_command *command, char **words)
 {
 	int			argc;
 	int			vars;
@@ -80,26 +70,26 @@ t_command   *fill_command_struct(char	*comm, t_command *command, char **words)
 	word_nbr = count_list(words);
 	vars = count_vars(words);
 	argc = word_nbr - vars - 1;
-	if(!(command->command = ft_strdup(comm)))
+	if (!(command->command = ft_strdup(comm)))
 		command->command = NULL;
 	add_variables(words, command, vars);
 	add_argv(words, command, vars, argc);
 	command->argc = argc;
-	if(!(command->ctrl_op = ft_strdup(words[word_nbr - 1])))
+	if (!(command->ctrl_op = ft_strdup(words[word_nbr - 1])))
 		command->ctrl_op = NULL;
-	return(command);
+	return (command);
 }
 
-t_command   *create_command_struct(char *cmd, char **env)
+t_command	*create_command_struct(char *cmd, char **env)
 {
 	char		**words;
 	t_command	*command;
 
-	if((words = word_splitting(cmd)))
+	if ((words = word_splitting(cmd)))
 	{
 		word_expansion(words, env);
-		if((command = (t_command*)malloc(sizeof(t_command))))
-		    command = fill_command_struct(cmd, command, words);
+		if ((command = (t_command*)malloc(sizeof(t_command))))
+			command = fill_command_struct(cmd, command, words);
 		destroy_arr(words);
 	}
 	return (command);

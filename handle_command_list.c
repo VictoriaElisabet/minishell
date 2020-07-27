@@ -21,7 +21,7 @@ void	destroy_command(t_command *command)
 	free(command);
 }
 
-int	    ctrl_function(char *ctrl_op, int status)
+int		ctrl_function(char *ctrl_op, int status)
 {
 	if ((ft_strcmp(ctrl_op, "||") == 0) && status != 0)
 		return (1);
@@ -32,25 +32,25 @@ int	    ctrl_function(char *ctrl_op, int status)
 	return (0);
 }
 
-int     handle_command_list(char **command_list, char ***env)
+int		handle_command_list(char **command_list, char ***env)
 {
-    int status;
-    int i;
-    t_command *command;
+	int			status;
+	int			i;
+	t_command	*command;
 
-    status = 0;
-    i = 0;
-    while (command_list[i] != NULL)
-    {
-        command = create_command_struct(command_list[i], *env);
-        status = exec_command(command, env);
-        if (ctrl_function(command->ctrl_op, status) != 1)
-	    {
+	status = 0;
+	i = 0;
+	while (command_list[i] != NULL)
+	{
+		command = create_command_struct(command_list[i], *env);
+		status = exec_command(command, env);
+		if (ctrl_function(command->ctrl_op, status) != 1)
+		{
 			if (command_list[i + 1] != NULL)
 				i++;
 		}
-        destroy_command(command);
-        i++;
-    }
-    return (status);
+		destroy_command(command);
+		i++;
+	}
+	return (status);
 }

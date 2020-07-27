@@ -12,31 +12,31 @@
 
 #include "minishell.h"
 
-char    *set_value(char *argv)
+char	*set_value(char *argv)
 {
-	int i;
-	char *value;
+	int		i;
+	char	*value;
 
 	i = 0;
-	while(argv[i] != '\0' && argv[i] != '=')
+	while (argv[i] != '\0' && argv[i] != '=')
 		i++;
 	value = ft_strsub(argv, i + 1, ft_strlen(argv) - (i + 1));
-	return(value);
+	return (value);
 }
 
-char    *set_name(char *argv)
+char	*set_name(char *argv)
 {
-	int i;
-	char *name;
+	int		i;
+	char	*name;
 
 	i = 0;
-	while(argv[i] != '\0' && argv[i] != '=')
+	while (argv[i] != '\0' && argv[i] != '=')
 		i++;
 	name = ft_strsub(argv, 0, i);
-	return(name);
+	return (name);
 }
 
-void    print_env(char **env)
+void	print_env(char **env)
 {
 	int i;
 
@@ -47,8 +47,8 @@ void    print_env(char **env)
 		i++;
 	}
 }
-   
-char    *new_command(char **argv, char *ctrl_op, int i)
+
+char	*new_command(char **argv, char *ctrl_op, int i)
 {
 	char	*arg;
 	char	*tmp;
@@ -72,13 +72,13 @@ char    *new_command(char **argv, char *ctrl_op, int i)
 	return (command);
 }
 
-int     ft_env(t_command *command, char **env)
+int		ft_env(t_command *command, char **env)
 {
-	char **tmp;
-	char *name;
-	char *value;
-	int i;
-	int     status;
+	char	**tmp;
+	char	*name;
+	char	*value;
+	int		i;
+	int		status;
 	char	*comm;
 	char	**command_list;
 
@@ -98,11 +98,11 @@ int     ft_env(t_command *command, char **env)
 			free(value);
 			i++;
 		}
-		if(command->argv[i] != NULL)
+		if (command->argv[i] != NULL)
 		{
-			if((comm = new_command(command->argv, command->ctrl_op, i)))
+			if ((comm = new_command(command->argv, command->ctrl_op, i)))
 			{
-				if((command_list = create_command_list(comm)))
+				if ((command_list = create_command_list(comm)))
 					status = handle_command_list(command_list, &tmp);
 			}
 			free(comm);

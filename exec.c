@@ -12,12 +12,12 @@
 
 #include "minishell.h"
 
-char 	*search_path(char *name, char *path)
+char	*search_path(char *name, char *path)
 {
-	DIR *dir;
-	struct dirent *dirent;
-	char	*file_path;
-	char	*tmp;
+	DIR				*dir;
+	struct dirent	*dirent;
+	char			*file_path;
+	char			*tmp;
 
 	if ((dir = opendir(path)))
 	{
@@ -25,11 +25,11 @@ char 	*search_path(char *name, char *path)
 		{
 			if (ft_strcmp(dirent->d_name, name) == 0)
 			{
-				if((tmp = ft_strjoin (path, "/")))
+				if ((tmp = ft_strjoin(path, "/")))
 				{
-					if((file_path = ft_strjoin(tmp, name)))
+					if ((file_path = ft_strjoin(tmp, name)))
 					{
-						free (tmp);
+						free(tmp);
 						return (file_path);
 					}
 				}
@@ -42,10 +42,10 @@ char 	*search_path(char *name, char *path)
 
 char	*find_executable(char *name, char **env)
 {
-	char *path;
-	char **paths;
-	char *file_path;
-	int i;
+	char	*path;
+	char	**paths;
+	char	*file_path;
+	int		i;
 
 	i = 0;
 	if ((path = get_env_value("PATH", env)))
@@ -84,7 +84,7 @@ int		print_exec_error(t_command *command, int status)
 		ft_printf("%s: No such file or directory\n", command->argv[0]);
 		return (127);
 	}
-	else if(WIFEXITED(status))
+	else if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
 	{
@@ -94,11 +94,11 @@ int		print_exec_error(t_command *command, int status)
 	return (EXIT_FAILURE);
 }
 
-int run_command(t_command *command, char **env)
+int		run_command(t_command *command, char **env)
 {
 	pid_t	pid;
 	char	*file_path;
-	int 	status;
+	int		status;
 
 	status = 0;
 	pid = fork();
@@ -114,7 +114,7 @@ int run_command(t_command *command, char **env)
 			return (print_exec_error(command, 125));
 		if (access(file_path, F_OK) != -1)
 		{
-			if(access(file_path, X_OK))
+			if (access(file_path, X_OK))
 				return (print_exec_error(command, 126));
 			if ((execve(file_path, command->argv, env)) == -1)
 				return (print_exec_error(command, 125));
@@ -128,7 +128,7 @@ int run_command(t_command *command, char **env)
 	return ((print_exec_error(command, status)));
 }
 
-int	exec_command(t_command *command, char ***env)
+int		exec_command(t_command *command, char ***env)
 {
 	int status;
 

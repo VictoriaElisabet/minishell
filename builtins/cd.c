@@ -17,9 +17,9 @@ int		change_wdir(char *path, char **argv, char ***env)
 	char	*old_pwd;
 	char	*pwd;
 
-	if(!(old_pwd = getcwd(NULL, 0)))
+	if (!(old_pwd = getcwd(NULL, 0)))
 		return (EXIT_FAILURE);
-	if(chdir(path) == -1)
+	if (chdir(path) == -1)
 	{
 		ft_printf("%s: %s: No such file or directory\n", argv[0], path);
 		return (EXIT_FAILURE);
@@ -35,7 +35,14 @@ int		change_wdir(char *path, char **argv, char ***env)
 	return (0);
 }
 
-int ft_cd (int argc, char **argv, char ***env)
+int		print_error(char *s, char **argv)
+{
+	ft_printf("%s: ", argv[0]);
+	ft_printf("%s\n", s);
+	return (EXIT_FAILURE);
+}
+
+int		ft_cd(int argc, char **argv, char ***env)
 {
 	char	*path;
 
@@ -47,18 +54,12 @@ int ft_cd (int argc, char **argv, char ***env)
 	else if (argv[1] == NULL)
 	{
 		if (!(path = get_env_value("HOME", *env)))
-		{
-			ft_printf("%s: HOME not set\n", argv[0]);
-			return (EXIT_FAILURE);
-		}
+			return (print_error("HOME not set", argv));
 	}
 	else if (argv[1][0] == '-')
 	{
 		if (!(path = get_env_value("OLDPWD", *env)))
-		{
-			ft_printf("%s: OLDPWD not set\n", argv[0]);
-			return (EXIT_FAILURE);
-		}
+			return (print_error("OLDPWD not set", argv));
 		ft_printf("%s\n", path);
 	}
 	else

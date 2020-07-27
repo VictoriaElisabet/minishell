@@ -12,33 +12,33 @@
 
 #include "minishell.h"
 
-int     str_chr(char *str, int c)
+int		str_chr(char *str, int c)
 {
-    int i;
+	int i;
 
-    i = 0;
-    while (str[i] != '\0')
-    {
-        if(str[i] == c)
-            return (1);
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] == c)
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
-void    word_expansion(char **words, char **env)
+void	word_expansion(char **words, char **env)
 {
-    int i;
+	int i;
 
-    i = 0;
-    while (words[i] != NULL)
-    {
-        if (str_chr(words[i], '\'') != 1)
-        {
-            if (str_chr(words[i], '"') != 1)
-                words[i] = tilde_expansion(words[i], env);
-            words[i] = parameter_expansion(words[i], env);
-        }
-        i++;
-    }
+	i = 0;
+	while (words[i] != NULL)
+	{
+		if (str_chr(words[i], '\'') != 1)
+		{
+			if (str_chr(words[i], '"') != 1)
+				words[i] = tilde_expansion(words[i], env);
+			words[i] = parameter_expansion(words[i], env);
+		}
+		i++;
+	}
 }

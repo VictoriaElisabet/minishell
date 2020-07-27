@@ -13,15 +13,15 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <sys/types.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <dirent.h>
-#include <sys/wait.h>
-#include "./libft/libft.h"
+# include <sys/types.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+# include <dirent.h>
+# include <sys/wait.h>
+# include "./libft/libft.h"
 
 # define BUF_SIZE 32
 
@@ -30,11 +30,8 @@
 # define PIPE_AMP_OP	4
 # define AMP_OP 		8
 # define AND_OP 		16
-# define S_COL_OP		32		
+# define S_COL_OP		32
 # define NEWLINE		64
-
-//int     count_words(char *command);
-//int     count_wordlength(char *command);
 
 typedef struct	s_env
 {
@@ -53,39 +50,38 @@ typedef struct	s_command
 
 }				t_command;
 
+int				str_chr(char *str, int c);
+int				ft_setenv(int argc, char *name, char *value, char ***env);
+int				count_arr(char **arr);
+int				ft_unsetenv(int argc, char **argv, char ***env);
+int				ft_cd (int argc, char **argv, char ***env);
+int				ft_echo(char **argv);
+int				is_builtin(t_command *command);
+int				run_builtin(t_command *command, char ***env, int status);
+int				exec_command(t_command *commands, char ***env);
+int				find_env(const char *name, char **env);
+int				ft_env(t_command *command, char **env);
+int				ft_exit(int argc, char **argv, int status);
+int				handle_command_list(char **command_list, char ***env);
+int				count_list(char **list);
 
-int     str_chr(char *str, int c);
-int     ft_setenv(int argc, char *name, char *value, char ***env);
-int     count_arr(char **arr);
-int     ft_unsetenv(int argc, char **argv, char ***env);
-int		ft_cd (int argc, char **argv, char ***env);
-int		ft_echo(char **argv);
-int     is_builtin(t_command *command);
-int     run_builtin(t_command *command, char ***env, int status);
-int		exec_command(t_command *commands, char ***env);
-int     find_env(const char *name, char **env);
-int     ft_env(t_command *command, char **env);
-int		ft_exit(int argc, char **argv, int status);
+char			**word_splitting(char *command);
+char			**create_command_list(char *prt_str);
+char			**create_argv_list(char **argv, char **words);
+char			**copy_env(char **environ);
+char			**add_env(const char *name, const char *value, char **env,
+				int count);
 
-int handle_command_list(char **command_list, char ***env);
+char			*tilde_expansion(char *word, char **env);
+char			*parameter_expansion(char *word, char **env);
+char			*get_env_value(char *name, char **env);
+char			*check_env(t_env **env, char *name);
 
-char    **word_splitting(char *command);
-char   	**create_command_list(char *prt_str);
-char    **create_argv_list(char **argv, char **words);
-char    **copy_env(char **environ);
-char    **add_env(const char *name, const char *value, char **env, int count);
+void			destroy_arr(char **arr);
+void			word_expansion(char **words, char **env);
+void			destroy_env(t_env **env);
+void			destroy_command(t_command *command);
 
-char	*tilde_expansion(char *word, char **env);
-char	*parameter_expansion(char *word, char **env);
-char	*get_env_value(char *name, char **env);
-char	*check_env(t_env **env, char *name);
-
-void	destroy_arr(char **arr);
-void    word_expansion(char **words, char **env);
-void	destroy_env(t_env **env);
-void	destroy_command(t_command *command);
-
-//t_command    **create_command_struct_list(char *prt_str, char **env);
-t_command   *create_command_struct(char *cmd, char **env);
+t_command		*create_command_struct(char *cmd, char **env);
 
 #endif

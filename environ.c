@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-extern char **environ;
-
 char	*env_strchr(const char *s, int c)
 {
 	char value;
@@ -35,12 +33,12 @@ char	*env_strchr(const char *s, int c)
 	return (NULL);
 }
 
-int     count_arr(char **arr)
+int		count_arr(char **arr)
 {
 	int i;
 
 	i = 0;
-	while(arr[i] != NULL)
+	while (arr[i] != NULL)
 		i++;
 	return (i);
 }
@@ -51,61 +49,60 @@ char	*get_env_value(char *name, char **env)
 	char	*value;
 
 	i = 0;
-	if(!(name))
+	if (!(name))
 		return (NULL);
 	while (env[i] != NULL)
 	{
 		if (ft_strncmp(name, env[i], ft_strlen(name)) == 0)
 		{
-			if((value = env_strchr(env[i], '=')))
+			if ((value = env_strchr(env[i], '=')))
 				return (value);
 		}
 		i++;
 	}
-	return(NULL);
+	return (NULL);
 }
 
-
-int     find_env(const char *name, char **env)
-{
-    int i;
-
-    i = 0;
-	if (!(name))
-		return(EXIT_FAILURE);
-    while (env[i] != NULL)
-    {
-        if (ft_strncmp(name, env[i], ft_strlen(name)) == 0)
-            return (0);
-        i++;
-    }
-    return (i);
-}
-
-char    **copy_env(char **environ)
+int		find_env(const char *name, char **env)
 {
 	int i;
-	char **env;
 
 	i = 0;
-	if((env = (char**)malloc(count_arr(environ) * sizeof(char*) + 1)))
+	if (!(name))
+		return (EXIT_FAILURE);
+	while (env[i] != NULL)
 	{
-		while(environ[i] != NULL)
+		if (ft_strncmp(name, env[i], ft_strlen(name)) == 0)
+			return (0);
+		i++;
+	}
+	return (i);
+}
+
+char	**copy_env(char **environ)
+{
+	int		i;
+	char	**env;
+
+	i = 0;
+	if ((env = (char**)malloc(count_arr(environ) * sizeof(char*) + 1)))
+	{
+		while (environ[i] != NULL)
 		{
-			if (ft_strncmp(environ[i],"SHELL=", 6) == 0)
+			if (ft_strncmp(environ[i], "SHELL=", 6) == 0)
 			{
 				//borde kanske vara pwd
-				if(!(env[i] = ft_strdup("SHELL=/home/vgrankul/projects/minishell/minishell")))
+				if (!(env[i] = ft_strdup("SHELL=/home/vgrankul/projects/minishell/minishell")))
 					return (NULL);
 			}
 			else
 			{
-				if(!(env[i] = ft_strdup(environ[i])))
+				if (!(env[i] = ft_strdup(environ[i])))
 					return (NULL);
 			}
 			i++;
 		}
 	}
 	env[i] = NULL;
-	return(env);
+	return (env);
 }
