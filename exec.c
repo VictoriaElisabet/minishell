@@ -62,36 +62,27 @@ char	*find_executable(char *name, char **env)
 				i++;
 			}
 		}
+		destroy_arr(paths);
 	}
-	destroy_arr(paths);
 	return (NULL);
 }
 
-int		print_exec_error(t_command *command, int status)
+char	set_file_path(t_command *command, char **file_path, char **env)
 {
-	if (status == 125)
+	if (str_chr(command->argv[0], '/') == 1)
 	{
-		ft_printf("%s: command not found\n", command->argv[0]);
-		return (125);
+		*file_path = ft_strdup(command->argv[0]);
+		if (access(*file_path, F_OK) == -1)
+			return (125);
 	}
-	else if (status == 126)
+	else
 	{
-		ft_printf("%s: command not an executable\n", command->argv[0]);
+		if (!(*file_path = find_executable(command->argv[0], env)))
+			return (127);
+	}
+	if (access(*file_path, X_OK) == -1)
 		return (126);
-	}
-	else if (status == 127)
-	{
-		ft_printf("%s: No such file or directory\n", command->argv[0]);
-		return (127);
-	}
-	else if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
-	{
-		if (WTERMSIG(status) == 11)
-			ft_printf("Segmentation fault\n");
-	}
-	return (EXIT_FAILURE);
+	return (0);
 }
 
 int		run_command(t_command *command, char **env)
@@ -106,21 +97,10 @@ int		run_command(t_command *command, char **env)
 		return (print_exec_error(command, EXIT_FAILURE));
 	if (pid == 0)
 	{
-		if (str_chr(command->argv[0], '/') == 1)
-			file_path = ft_strdup(command->argv[0]);
-		else
-			file_path = find_executable(command->argv[0], env);
-		if (!(file_path))
-			return (print_exec_error(command, 125));
-		if (access(file_path, F_OK) != -1)
-		{
-			if (access(file_path, X_OK))
-				return (print_exec_error(command, 126));
-			if ((execve(file_path, command->argv, env)) == -1)
-				return (print_exec_error(command, 125));
-		}
-		else
-			return (print_exec_error(command, 127));
+		if ((status = set_file_path(command, &file_path, env)) != 0)
+			return (print_exec_error(command, status));
+		if ((execve(file_path, command->argv, env)) == -1)
+			return (print_exec_error(command, status));
 		free(file_path);
 	}
 	else

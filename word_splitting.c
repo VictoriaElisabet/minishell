@@ -12,30 +12,44 @@
 
 #include "minishell.h"
 
-int		count_words(char *command)
+int		is_separator(int c)
+{
+	if (c == ' ' || c == '\t' || c == '|' || c == '&' || c == ';' || c == '\n')
+		return (1);
+	return (0);
+}
+
+int		count_quoting_word(char *command)
 {
 	int i;
-	int count;
 
 	i = 0;
-	count = 0;
+	if (command[i] == '"' || command[i] == '\'')
+		i++;
+	while (command[i] != '"' && command[i] != '\'' && command[i] != '\0')
+		i++;
+	return (i);
+}
+
+int		count_words(char *command, int count)
+{
+	int i;
+
+	i = 0;
 	while (command[i] != '\0')
 	{
-		if (command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&' && command[i] != ';' && command[i] != '\n')
+		if (is_separator(command[i]) == 0)
 		{
 			count++;
-			while (command[i] != ' ' && command[i] != '\t' && command[i] != '|' && command[i] != '&' && command[i] != ';' && command[i] != '\n' && command[i] != '\0')
+			while (is_separator(command[i]) == 0 && command[i] != '\0')
 			{
 				if (command[i] == '"' || command[i] == '\'')
-				{
-					i++;
-					while (command[i] != '"' && command[i] != '\'' && command[i] != '\0')
-						i++;
-				}
+					i = i + count_quoting_word(&command[i]);
 				i++;
 			}
 		}
-		if (command[i] == '|' || command[i] == '&' || command[i] == ';' || command[i] == '\n')
+		if (command[i] == '|' || command[i] == '&' || command[i] == ';' ||
+		command[i] == '\n')
 		{
 			if (command[i + 1] == '|' || command[i + 1] == '&')
 				i++;
@@ -46,26 +60,23 @@ int		count_words(char *command)
 	return (count);
 }
 
-int		count_wordlength(char *command)
+int		count_wordlen(char *command)
 {
 	int i;
 
 	i = 0;
-	if (command[0] == '|' || command[0] == '&' || command[0] == ';' || command[0] == '\n')
+	if (command[0] == '|' || command[0] == '&' || command[0] == ';' ||
+	command[0] == '\n')
 	{
 		i++;
 		if (command[i] == '|' || command[i] == '&')
 			i++;
 		return (i);
 	}
-	while (command[i] != '|' && command[i] != '&' && command[i] != ';' && command[i] != ' ' && command[i] != '\t' && command[i] != '\n' && command[i] != '\0')
+	while (is_separator(command[i]) == 0 && command[i] != '\0')
 	{
 		if (command[i] == '"' || command[i] == '\'')
-		{
-			i++;
-			while (command[i] != '"' && command[i] != '\'' && command[i] != '\0')
-				i++;
-		}
+			i = i + count_quoting_word(&command[i]);
 		i++;
 	}
 	return (i);
@@ -77,19 +88,21 @@ char	**word_splitting(char *command)
 	int		i;
 	int		j;
 	int		words_nbr;
+	int		count;
 
 	j = 0;
 	i = 0;
-	words_nbr = count_words(command);
+	count = 0;
+	words_nbr = count_words(command, count);
 	if (!(words = (char**)malloc(words_nbr * sizeof(char*) + 1)))
 		return (NULL);
 	while (j < words_nbr)
 	{
 		while ((command[i] == ' ' || command[i] == '\t') && command[i] != '\0')
 			i++;
-		if (!(words[j] = ft_strsub(&command[i], 0, count_wordlength(&command[i]))))
+		if (!(words[j] = ft_strsub(&command[i], 0, count_wordlen(&command[i]))))
 			return (NULL);
-		i = i + count_wordlength(&command[i]);
+		i = i + count_wordlen(&command[i]);
 		j++;
 	}
 	words[j] = NULL;

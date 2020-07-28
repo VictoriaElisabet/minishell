@@ -12,14 +12,22 @@
 
 #include "minishell.h"
 
-extern char **environ;
+void	set_prt_str(char **prt_str, char ch[2])
+{
+	char	*tmp;
+
+	if ((tmp = ft_strjoin(*prt_str, ch)))
+	{
+		free(*prt_str);
+		*prt_str = tmp;
+	}
+}
 
 char	*read_prompt(char *prompt)
 {
 	int		ret;
 	char	ch[2];
 	char	*prt_str;
-	char	*tmp;
 
 	prt_str = NULL;
 	ft_printf("%s", prompt);
@@ -31,16 +39,10 @@ char	*read_prompt(char *prompt)
 				return (NULL);
 		if ((int)ch[0] == EOF || ch[0] == '\n')
 		{
-			if (!(tmp = ft_strjoin(prt_str, ch)))
-				return (NULL);
-			free(prt_str);
-			prt_str = tmp;
+			set_prt_str(&prt_str, ch);
 			return (prt_str);
 		}
-		if (!(tmp = ft_strjoin(prt_str, ch)))
-			return (NULL);
-		free(prt_str);
-		prt_str = tmp;
+		set_prt_str(&prt_str, ch);
 	}
 	if (ret < 0)
 		return (NULL);
@@ -49,13 +51,13 @@ char	*read_prompt(char *prompt)
 
 int		main(void)
 {
-	char	*prt_str;
-	char	**env;
-	char	**command_list;
-	int		status;
+	extern char	**environ;
+	char		*prt_str;
+	char		**env;
+	char		**command_list;
+	int			status;
 
 	status = 0;
-	// ifall env failar då?
 	env = copy_env(environ);
 	while (1)
 	{

@@ -10,43 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-
-char	*set_value(char *argv)
-{
-	int		i;
-	char	*value;
-
-	i = 0;
-	while (argv[i] != '\0' && argv[i] != '=')
-		i++;
-	value = ft_strsub(argv, i + 1, ft_strlen(argv) - (i + 1));
-	return (value);
-}
-
-char	*set_name(char *argv)
-{
-	int		i;
-	char	*name;
-
-	i = 0;
-	while (argv[i] != '\0' && argv[i] != '=')
-		i++;
-	name = ft_strsub(argv, 0, i);
-	return (name);
-}
-
-void	print_env(char **env)
-{
-	int i;
-
-	i = 0;
-	while (env[i] != NULL)
-	{
-		ft_printf("%s\n", env[i]);
-		i++;
-	}
-}
+#include "../minishell.h"
 
 char	*new_command(char **argv, char *ctrl_op, int i)
 {
@@ -72,15 +36,43 @@ char	*new_command(char **argv, char *ctrl_op, int i)
 	return (command);
 }
 
+int		update_env(char *argv, char ***tmp)
+{
+	char	*name;
+	char	*value;
+	int		status;
+
+	status = 0;
+	name = set_name(argv);
+	value = set_value(argv);
+	status = ft_setenv(2, name, value, tmp);
+	free(name);
+	free(value);
+	return (status);
+}
+
+int		run_env_cmd(t_command *command, char ***tmp, int i)
+{
+	char	*comm;
+	char	**command_list;
+	int		status;
+
+	status = 0;
+	if ((comm = new_command(command->argv, command->ctrl_op, i)))
+	{
+		if ((command_list = create_command_list(comm)))
+			status = handle_command_list(command_list, tmp);
+	}
+	free(comm);
+	destroy_arr(command_list);
+	return (status);
+}
+
 int		ft_env(t_command *command, char **env)
 {
 	char	**tmp;
-	char	*name;
-	char	*value;
 	int		i;
 	int		status;
-	char	*comm;
-	char	**command_list;
 
 	status = 0;
 	tmp = copy_env(env);
@@ -89,25 +81,14 @@ int		ft_env(t_command *command, char **env)
 	else
 	{
 		i = 1;
-		while (command->argv[i] != NULL && (str_chr(command->argv[i], '=') == 1))
+		while (command->argv[i] != NULL &&
+		(str_chr(command->argv[i], '=') == 1))
 		{
-			name = set_name(command->argv[i]);
-			value = set_value(command->argv[i]);
-			ft_setenv(2, name, value, &tmp);
-			free(name);
-			free(value);
+			status = update_env(command->argv[i], &tmp);
 			i++;
 		}
 		if (command->argv[i] != NULL)
-		{
-			if ((comm = new_command(command->argv, command->ctrl_op, i)))
-			{
-				if ((command_list = create_command_list(comm)))
-					status = handle_command_list(command_list, &tmp);
-			}
-			free(comm);
-			destroy_arr(command_list);
-		}
+			status = run_env_cmd(command, &tmp, i);
 		else
 			print_env(tmp);
 	}

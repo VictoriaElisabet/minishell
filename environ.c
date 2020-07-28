@@ -91,8 +91,9 @@ char	**copy_env(char **environ)
 		{
 			if (ft_strncmp(environ[i], "SHELL=", 6) == 0)
 			{
-				//borde kanske vara pwd
-				if (!(env[i] = ft_strdup("SHELL=/home/vgrankul/projects/minishell/minishell")))
+				env[i] =
+				ft_strdup("SHELL=/home/vgrankul/projects/minishell/minishell");
+				if (!(env[i]))
 					return (NULL);
 			}
 			else
