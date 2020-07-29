@@ -63,7 +63,7 @@ char	*expand_param(char *param, char **env)
 	name = get_name(param);
 	while (env[i] != NULL)
 	{
-		if (ft_strncmp(name, env[i], ft_strlen(name)) == 0)
+		if (find_env(name, env) == 0)
 		{
 			value = get_env_value(name, env);
 			free(name);
@@ -75,13 +75,26 @@ char	*expand_param(char *param, char **env)
 	return ("\0");
 }
 
+void	set_word(char **word, char *temp, char *value, int i)
+{
+	char	*tmp;
+
+	tmp = ft_strjoin(temp, value);
+	free(temp);
+	value = ft_strsub((*word), i, strlen(&(*word)[i]));
+	temp = ft_strjoin(tmp, value);
+	free((*word));
+	free(value);
+	free(tmp);
+	(*word) = temp;
+}
+
 char	*parameter_expansion(char *word, char **env)
 {
 	int		i;
 	char	*value;
 	char	*param;
 	char	*temp;
-	char	*tmp;
 
 	i = 0;
 	while (word[i] != '\0')
@@ -91,12 +104,8 @@ char	*parameter_expansion(char *word, char **env)
 			temp = ft_strsub(word, 0, i);
 			i = i + get_param(&word[i], &param);
 			value = expand_param(param, env);
-			tmp = ft_strjoin(temp, value);
-			free(temp);
+			set_word(&word, temp, value, i);
 			free(param);
-			temp = ft_strjoin(tmp, ft_strsub(word, i, strlen(&word[i])));
-			free(word);
-			word = temp;
 		}
 		i++;
 	}

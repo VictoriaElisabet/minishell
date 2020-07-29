@@ -81,7 +81,7 @@ char			*set_value(char *argv);
 char			*set_name(char *argv);
 
 void			destroy_arr(char **arr);
-void			word_expansion(char **words, char **env);
+void			word_expansion(char ***words, char **env);
 void			destroy_env(t_env **env);
 void			destroy_command(t_command *command);
 void			print_env(char **env);

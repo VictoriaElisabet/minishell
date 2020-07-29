@@ -12,6 +12,32 @@
 
 #include "minishell.h"
 
+char	**remove_word(char **words, int word)
+{
+	int		i;
+	int		j;
+	char	**new;
+	int		count;
+
+	i = 0;
+	j = 0;
+	count = count_arr(words) - 1;
+	if ((new = (char**)malloc((count * sizeof(char*) + 1))))
+	{
+		while (j < count)
+		{
+			if (i == word)
+				i++;
+			if (!(new[j] = ft_strdup(words[i])))
+				return (NULL);
+			i++;
+			j++;
+		}
+	}
+	new[j] = NULL;
+	return (new);
+}
+
 int		str_chr(char *str, int c)
 {
 	int i;
@@ -26,18 +52,28 @@ int		str_chr(char *str, int c)
 	return (0);
 }
 
-void	word_expansion(char **words, char **env)
+void	word_expansion(char ***words, char **env)
 {
-	int i;
+	int		i;
+	char	**tmp;
 
 	i = 0;
-	while (words[i] != NULL)
+	while ((*words)[i] != NULL)
 	{
-		if (str_chr(words[i], '\'') != 1)
+		if (str_chr((*words)[i], '\'') != 1)
 		{
-			if (str_chr(words[i], '"') != 1)
-				words[i] = tilde_expansion(words[i], env);
-			words[i] = parameter_expansion(words[i], env);
+			if (str_chr((*words)[i], '"') != 1)
+				(*words)[i] = tilde_expansion((*words)[i], env);
+			if (ft_strcmp(((*words)[i] =
+			parameter_expansion((*words)[i], env)), "\0") == 0)
+			{
+				if ((tmp = remove_word((*words), i)))
+				{
+					destroy_arr((*words));
+					(*words) = tmp;
+				}
+				i--;
+			}
 		}
 		i++;
 	}

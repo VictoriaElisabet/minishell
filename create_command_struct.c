@@ -87,7 +87,7 @@ t_command	*create_command_struct(char *cmd, char **env)
 
 	if ((words = word_splitting(cmd)))
 	{
-		word_expansion(words, env);
+		word_expansion(&words, env);
 		if ((command = (t_command*)malloc(sizeof(t_command))))
 			command = fill_command_struct(cmd, command, words);
 		destroy_arr(words);
