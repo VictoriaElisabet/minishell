@@ -12,75 +12,91 @@
 
 #include "minishell.h"
 
-char	*replace_var(char *word, int j, char **env)
+char	*get_name(char *param)
 {
 	int		i;
-	int		k;
+	int		len;
 	char	*name;
-	char	*value;
-	char	*begin;
 
 	i = 0;
-	k = 0;
-	while (word[i] != '$' && word[i] != '\0' && j > 0)
+	len = ft_strlen(param);
+	if (param == NULL)
+		return ("\0");
+	while (ft_isalnum(param[i]) != 1 && param[i] != '\0' && len-- > 0)
 	{
+		if (param[i] == '{')
+			len--;
 		i++;
-		j--;
 	}
-	if (!(begin = ft_strsub(word, 0, i)))
-		begin = ft_strcpy(ft_strnew(1), "\0");
-	while (ft_isalnum(word[i + k]) != 1 && word[i + k] != '\0' && j-- > 0)
-		k++;
-	if ((name = ft_strsub(&word[i + k], 0, j)) != NULL)
+	name = ft_strsub(&param[i], 0, len);
+	return (name);
+}
+
+int		get_param(char *word, char **param)
+{
+	int		i;
+
+	i = 1;
+	if (word[i] == '{')
 	{
-		i = 0;
-		while (env[i] != NULL)
-		{
-			if (ft_strncmp(name, env[i], ft_strlen(name)) == 0)
-			{
-				if ((value = ft_strjoin(begin, get_env_value(name, env))) != NULL)
-				{
-					free(begin);
-					free(name);
-					return (value);
-				}
-			}
+		while (word[i] != '}')
 			i++;
+		i++;
+	}
+	else
+	{
+		while (word[i] != '$' && word[i] != '"' && word[i] != '\0' &&
+		word[i] != '}')
+			i++;
+	}
+	*param = ft_strsub(word, 0, i);
+	return (i);
+}
+
+char	*expand_param(char *param, char **env)
+{
+	char	*value;
+	int		i;
+	char	*name;
+
+	i = 0;
+	name = get_name(param);
+	while (env[i] != NULL)
+	{
+		if (ft_strncmp(name, env[i], ft_strlen(name)) == 0)
+		{
+			value = get_env_value(name, env);
+			free(name);
+			return (value);
 		}
+		i++;
 	}
 	free(name);
-	free(begin);
-	return (ft_strcpy(ft_strnew(1), "\0"));
+	return ("\0");
 }
 
 char	*parameter_expansion(char *word, char **env)
 {
 	int		i;
-	char	*replaced;
+	char	*value;
+	char	*param;
+	char	*temp;
 	char	*tmp;
-	int		braces;
 
 	i = 0;
-	braces = 0;
 	while (word[i] != '\0')
 	{
 		if (word[i] == '$')
 		{
-			if (word[i + 1] == '{')
-				braces = 1;
-			while (word[i + 1] != '\0' && word[i + 1] != '}' && word[i + 1] != '$' && word[i + 1] != '"')
-				i++;
-			if ((replaced = replace_var(word, i + 1, env)))
-			{
-				if (braces == 1)
-					i++;
-				if ((tmp = ft_strjoin(replaced, &word[i + 1])) != NULL)
-				{
-					free(word);
-					word = tmp;
-				}
-				free(replaced);
-			}
+			temp = ft_strsub(word, 0, i);
+			i = i + get_param(&word[i], &param);
+			value = expand_param(param, env);
+			tmp = ft_strjoin(temp, value);
+			free(temp);
+			free(param);
+			temp = ft_strjoin(tmp, ft_strsub(word, i, strlen(&word[i])));
+			free(word);
+			word = temp;
 		}
 		i++;
 	}
