@@ -35,8 +35,10 @@ int		count_list(char **list)
 	return (i);
 }
 
-int		print_exec_error(t_command *command, int status)
+int		print_exec_error(t_command *command, int status, char *file_path)
 {
+	if(file_path != NULL)
+		free(file_path);
 	if (status == 125)
 	{
 		ft_printf("%s: No such file or directory\n", command->argv[0]);

@@ -26,8 +26,10 @@ int		count_quoting_word(char *command)
 	i = 0;
 	if (command[i] == '"' || command[i] == '\'')
 		i++;
-	while (command[i] != '"' && command[i] != '\'' && command[i] != '\0')
+	while (command[i] != '"' && command[i] != '\'' && command[i] != '\0' && is_separator(command[i]) != 1)
 		i++;
+	if (is_separator(command[i]) == 1)
+		i = i - 1;
 	return (i);
 }
 

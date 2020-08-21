@@ -92,20 +92,20 @@ int		run_command(t_command *command, char **env)
 	int		status;
 
 	status = 0;
+	if ((status = set_file_path(command, &file_path, env)) != 0)
+		return (print_exec_error(command, status, file_path));
 	pid = fork();
 	if (pid == -1)
-		return (print_exec_error(command, EXIT_FAILURE));
+		return (print_exec_error(command, EXIT_FAILURE, file_path));
 	if (pid == 0)
 	{
-		if ((status = set_file_path(command, &file_path, env)) != 0)
-			return (print_exec_error(command, status));
 		if ((execve(file_path, command->argv, env)) == -1)
-			return (print_exec_error(command, status));
+			return (print_exec_error(command, status, file_path));
 		free(file_path);
 	}
 	else
 		pid = waitpid(pid, &status, 0);
-	return ((print_exec_error(command, status)));
+	return ((print_exec_error(command, status, file_path)));
 }
 
 int		exec_command(t_command *command, char ***env)

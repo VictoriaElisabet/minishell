@@ -64,7 +64,7 @@ int				ft_env(t_command *command, char **env);
 int				ft_exit(int argc, char **argv, int status);
 int				handle_command_list(char **command_list, char ***env);
 int				count_list(char **list);
-int				print_exec_error(t_command *command, int status);
+int				print_exec_error(t_command *command, int status, char *file_path);
 
 char			**word_splitting(char *command);
 char			**create_command_list(char *prt_str);
@@ -85,6 +85,7 @@ void			word_expansion(char ***words, char **env);
 void			destroy_env(t_env **env);
 void			destroy_command(t_command *command);
 void			print_env(char **env);
+void			auto_completion(char *prt_str);
 
 t_command		*create_command_struct(char *cmd, char **env);
 
