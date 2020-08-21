@@ -12,19 +12,6 @@
 
 #include "minishell.h"
 
-void	destroy_arr(char **arr)
-{
-	int i;
-
-	i = 0;
-	while (arr[i] != NULL)
-	{
-		free(arr[i]);
-		i++;
-	}
-	free(arr);
-}
-
 int		count_list(char **list)
 {
 	int i;
@@ -37,7 +24,7 @@ int		count_list(char **list)
 
 int		print_exec_error(t_command *command, int status, char *file_path)
 {
-	if(file_path != NULL)
+	if (file_path != NULL)
 		free(file_path);
 	if (status == 125)
 	{

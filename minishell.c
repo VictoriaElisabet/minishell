@@ -12,6 +12,19 @@
 
 #include "minishell.h"
 
+void	destroy_arr(char **arr)
+{
+	int i;
+
+	i = 0;
+	while (arr[i] != NULL)
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
+
 void	set_prt_str(char **prt_str, char ch[2])
 {
 	char	*tmp;
