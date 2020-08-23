@@ -21,15 +21,19 @@ int		change_wdir(char *path, char **argv, char ***env)
 		return (EXIT_FAILURE);
 	if (chdir(path) == -1)
 	{
+		free(old_pwd);
 		ft_printf("%s: %s: No such file or directory\n", argv[0], path);
 		return (EXIT_FAILURE);
 	}
 	if (!(pwd = getcwd(NULL, 0)))
 		return (EXIT_FAILURE);
-	if (ft_setenv(2, "PWD", pwd, env) != 0)
+	if ((ft_setenv(2, "PWD", pwd, env) != 0) ||
+	(ft_setenv(2, "OLDPWD", old_pwd, env) != 0))
+	{
+		free(old_pwd);
+		free(pwd);
 		return (EXIT_FAILURE);
-	if (ft_setenv(2, "OLDPWD", old_pwd, env) != 0)
-		return (EXIT_FAILURE);
+	}
 	free(pwd);
 	free(old_pwd);
 	return (0);

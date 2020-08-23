@@ -12,14 +12,15 @@
 
 #include "../minishell.h"
 
-int		run_builtin(t_command *command, char ***env, int status)
+int		run_builtin(t_command *command, char **command_list, char ***env,
+int status)
 {
 	if (ft_strcmp(command->argv[0], "cd") == 0)
 		return (ft_cd(command->argc, command->argv, env));
 	if (ft_strcmp(command->argv[0], "echo") == 0)
 		return (ft_echo(command->argv));
 	if (ft_strcmp(command->argv[0], "exit") == 0)
-		return (ft_exit(command->argc, command->argv, status));
+		return (ft_exit(command, command_list, env, status));
 	if (ft_strcmp(command->argv[0], "env") == 0)
 		return (ft_env(command, *env));
 	if (ft_strcmp(command->argv[0], "setenv") == 0)

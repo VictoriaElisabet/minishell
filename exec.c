@@ -30,6 +30,7 @@ char	*search_path(char *name, char *path)
 					if ((file_path = ft_strjoin(tmp, name)))
 					{
 						free(tmp);
+						closedir(dir);
 						return (file_path);
 					}
 				}
@@ -108,7 +109,7 @@ int		run_command(t_command *command, char **env)
 	return ((print_exec_error(command, status, file_path)));
 }
 
-int		exec_command(t_command *command, char ***env)
+int		exec_command(t_command *command, char **command_list, char ***env)
 {
 	int status;
 
@@ -116,7 +117,7 @@ int		exec_command(t_command *command, char ***env)
 	if (command->argc != 0)
 	{
 		if (is_builtin(command) == 1)
-			status = run_builtin(command, env, status);
+			status = run_builtin(command, command_list, env, status);
 		else
 			status = run_command(command, *env);
 	}

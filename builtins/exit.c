@@ -12,13 +12,23 @@
 
 #include "../minishell.h"
 
-int	ft_exit(int argc, char **argv, int status)
+int	ft_exit(t_command *command, char **command_list, char ***env, int status)
 {
-	if (argc > 2)
-		ft_printf("%s: too many arguments\n", argv[0]);
-	else if (argc < 2)
+	if (command->argc > 2)
+		ft_printf("%s: too many arguments\n", command->argv[0]);
+	else if (command->argc < 2)
+	{
+		destroy_command(command);
+		destroy_arr(*env);
+		destroy_arr(command_list);
 		exit(status);
+	}
 	else
-		exit(ft_atoi(argv[1]));
+	{
+		destroy_command(command);
+		destroy_arr(*env);
+		destroy_arr(command_list);
+		exit(ft_atoi(command->argv[1]));
+	}
 	return (0);
 }

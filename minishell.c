@@ -83,7 +83,6 @@ int		main(void)
 				handle_command_list(command_list, &env);
 				destroy_arr(command_list);
 			}
-			free(prt_str);
 		}
 	}
 	destroy_arr(env);

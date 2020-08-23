@@ -89,5 +89,6 @@ char	**create_command_list(char *prt_str)
 		}
 	}
 	commands[j] = NULL;
+	free(prt_str);
 	return (commands);
 }

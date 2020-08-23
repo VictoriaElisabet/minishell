@@ -57,11 +57,14 @@ int				ft_unsetenv(int argc, char **argv, char ***env);
 int				ft_cd (int argc, char **argv, char ***env);
 int				ft_echo(char **argv);
 int				is_builtin(t_command *command);
-int				run_builtin(t_command *command, char ***env, int status);
-int				exec_command(t_command *commands, char ***env);
+int				run_builtin(t_command *command, char **command_list,
+				char ***env, int status);
+int				exec_command(t_command *commands, char **command_list,
+				char ***env);
 int				find_env(const char *name, char **env);
 int				ft_env(t_command *command, char **env);
-int				ft_exit(int argc, char **argv, int status);
+int				ft_exit(t_command *command, char**command_list, char ***env,
+				int status);
 int				handle_command_list(char **command_list, char ***env);
 int				count_list(char **list);
 int				print_exec_error(t_command *command, int status,
