@@ -60,18 +60,20 @@ char	*expand_param(char *param, char **env)
 	char	*name;
 
 	i = 0;
-	name = get_name(param);
-	while (env[i] != NULL)
+	if ((name = get_name(param)))
 	{
-		if (find_env(name, env) == 0)
+		while (env[i] != NULL)
 		{
-			value = get_env_value(name, env);
-			free(name);
-			return (value);
+			if (find_env(name, env) == 0)
+			{
+				value = get_env_value(name, env);
+				free(name);
+				return (value);
+			}
+			i++;
 		}
-		i++;
+		free(name);
 	}
-	free(name);
 	return ("\0");
 }
 
@@ -101,11 +103,16 @@ char	*parameter_expansion(char *word, char **env)
 	{
 		if (word[i] == '$')
 		{
-			temp = ft_strsub(word, 0, i);
-			i = i + get_param(&word[i], &param);
-			value = expand_param(param, env);
-			set_word(&word, temp, value, i);
-			free(param);
+			if ((temp = ft_strsub(word, 0, i)))
+			{
+				i = i + get_param(&word[i], &param);
+				if ((param))
+				{
+					value = expand_param(param, env);
+					set_word(&word, temp, value, i);
+					free(param);
+				}
+			}
 		}
 		i++;
 	}

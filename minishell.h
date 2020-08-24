@@ -70,7 +70,7 @@ int				count_list(char **list);
 int				print_exec_error(t_command *command, int status,
 				char *file_path);
 
-char			**word_splitting(char *command);
+char			**word_splitting(char *command, int count);
 char			**create_command_list(char *prt_str);
 char			**create_argv_list(char **argv, char **words);
 char			**copy_env(char **environ);

@@ -29,7 +29,10 @@ char	**remove_word(char **words, int word)
 			if (i == word)
 				i++;
 			if (!(new[j] = ft_strdup(words[i])))
+			{
+				destroy_arr(new);
 				return (NULL);
+			}
 			i++;
 			j++;
 		}

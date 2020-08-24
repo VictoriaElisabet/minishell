@@ -42,8 +42,8 @@ int		handle_command_list(char **command_list, char ***env)
 	i = 0;
 	while (command_list[i] != NULL)
 	{
-		command = create_command_struct(command_list[i], *env);
-		status = exec_command(command, command_list, env);
+		if ((command = create_command_struct(command_list[i], *env)))
+			status = exec_command(command, command_list, env);
 		if (ctrl_function(command->ctrl_op, status) != 1)
 		{
 			if (command_list[i + 1] != NULL)

@@ -85,17 +85,15 @@ int		count_wordlen(char *command)
 	return (i);
 }
 
-char	**word_splitting(char *command)
+char	**word_splitting(char *command, int count)
 {
 	char	**words;
 	int		i;
 	int		j;
 	int		words_nbr;
-	int		count;
 
 	j = 0;
 	i = 0;
-	count = 0;
 	words_nbr = count_words(command, count);
 	if (!(words = (char**)malloc(words_nbr * sizeof(char*) + 1)))
 		return (NULL);
@@ -104,7 +102,10 @@ char	**word_splitting(char *command)
 		while ((command[i] == ' ' || command[i] == '\t') && command[i] != '\0')
 			i++;
 		if (!(words[j] = ft_strsub(&command[i], 0, count_wordlen(&command[i]))))
+		{
+			destroy_arr(words);
 			return (NULL);
+		}
 		i = i + count_wordlen(&command[i]);
 		j++;
 	}
