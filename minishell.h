@@ -83,6 +83,7 @@ char			*get_env_value(char *name, char **env);
 char			*check_env(t_env **env, char *name);
 char			*set_value(char *argv);
 char			*set_name(char *argv);
+char			*get_env_name(char *env);
 
 void			destroy_arr(char **arr);
 void			word_expansion(char ***words, char **env);

@@ -24,9 +24,11 @@ $(NAME):
 	ranlib $(NAME)
 
 clean:
+	make clean -C ft_printf/
 	rm -f $(OBJECTS)
 
 fclean: clean
+	make fclean -C ft_printf/
 	rm -f $(NAME)
 
 re: fclean all

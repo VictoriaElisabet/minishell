@@ -65,15 +65,20 @@ char	*get_env_value(char *name, char **env)
 
 int		find_env(const char *name, char **env)
 {
-	int i;
+	int		i;
+	char	*env_name;
 
 	i = 0;
 	if (!(name))
 		return (EXIT_FAILURE);
 	while (env[i] != NULL)
 	{
-		if (ft_strncmp(name, env[i], ft_strlen(name)) == 0)
+		if (ft_strcmp(name, (env_name = get_env_name(env[i]))) == 0)
+		{
+			free(env_name);
 			return (0);
+		}
+		free(env_name);
 		i++;
 	}
 	return (i);

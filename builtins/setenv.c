@@ -39,17 +39,31 @@ char	**add_env(const char *name, const char *value, char **env, int count)
 	return (new);
 }
 
+char	*get_env_name(char *env)
+{
+	int		i;
+	char	*name;
+
+	i = 0;
+	while (env[i] != '\0' && env[i] != '=')
+		i++;
+	if ((name = ft_strsub(env, 0, i)))
+		return (name);
+	return (NULL);
+}
+
 int		set_env(const char *name, const char *value, char **env)
 {
 	int		i;
 	char	*tmp;
+	char	*env_name;
 
 	i = 0;
 	if (!(name))
 		return (EXIT_FAILURE);
 	while (env[i] != NULL)
 	{
-		if (ft_strncmp(name, env[i], ft_strlen(name)) == 0)
+		if (ft_strcmp(name, (env_name = get_env_name(env[i]))) == 0)
 		{
 			free(env[i]);
 			if ((tmp = ft_strjoin(name, "=")))
@@ -58,8 +72,10 @@ int		set_env(const char *name, const char *value, char **env)
 					return (EXIT_FAILURE);
 				free(tmp);
 			}
+			free(env_name);
 			return (0);
 		}
+		free(env_name);
 		i++;
 	}
 	return (i);

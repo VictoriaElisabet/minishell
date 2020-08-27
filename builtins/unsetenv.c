@@ -18,6 +18,7 @@ char	**remove_env(const char *name, char **env)
 	int		j;
 	char	**new;
 	int		count;
+	char	*env_name;
 
 	i = 0;
 	j = 0;
@@ -26,12 +27,13 @@ char	**remove_env(const char *name, char **env)
 	{
 		while (j < count)
 		{
-			if (ft_strncmp(name, env[i], ft_strlen(name)) == 0)
+			if (ft_strcmp(name, (env_name = get_env_name(env[i]))) == 0)
 				i++;
 			if (!(new[j] = ft_strdup(env[i])))
 				return (NULL);
 			i++;
 			j++;
+			free(env_name);
 		}
 	}
 	new[j] = NULL;
